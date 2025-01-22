@@ -8,30 +8,43 @@ data class Dog(
     val birthDate: Date,
     val gender: Gender,
     var weight: Double,
-    val vaccinations: MutableList<Vaccination> = mutableListOf()
+    val castration: Boolean,
+    val sterilization: Boolean,
+    val vaccinations: MutableList<Vaccination> = mutableListOf(),
+    val treatments: MutableList<Treatment> = mutableListOf()
 ) {
-    // Метод для добавления прививки
     fun addVaccination(vaccination: Vaccination) {
         vaccinations.add(vaccination)
     }
 
-    // Метод для удаления прививки
     fun removeVaccination(vaccination: Vaccination) {
         vaccinations.remove(vaccination)
     }
 
-    // Метод для получения списка всех прививок
+    fun addTreatment(treatment: Treatment) {
+        treatments.add(treatment)
+    }
+
+    fun removeTreatment(treatment: Treatment) {
+        treatments.remove(treatment)
+    }
+
     fun getVaccinations(): List<Vaccination> = vaccinations
+    fun getTreatments(): List<Treatment> = treatments
 }
 
-// Перечисление для пола собаки
 enum class Gender {
     MALE,
     FEMALE
 }
 
-// Класс для прививки
 data class Vaccination(
     val name: String,
     val date: Date
 )
+
+data class Treatment(
+    val name: String,
+    val date: Date
+)
+
