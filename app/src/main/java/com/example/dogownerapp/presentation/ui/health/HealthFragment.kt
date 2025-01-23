@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dogownerapp.R
 import com.example.dogownerapp.databinding.FragmentHealthBinding
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.Gender
@@ -21,7 +23,8 @@ class HealthFragment : Fragment() {
     private val viewModel: HealthViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHealthBinding.inflate(inflater, container, false)
@@ -40,8 +43,8 @@ class HealthFragment : Fragment() {
 
         binding.addDogButton.setOnClickListener {
             val newDog = Dog(
-                name = "New Dog",
-                breed = "Unknown",
+                name = "Тузик",
+                breed = "Бордер колли",
                 birthDate = Date(),
                 gender = Gender.MALE,
                 weight = 10.0,
@@ -51,7 +54,10 @@ class HealthFragment : Fragment() {
                 treatments = arrayListOf(),
             )
             viewModel.addDog(newDog)
+            adapter.reload()
             Log.i("DOG", "added")
+            findNavController().navigate(R.id.action_dogsListFragment_to_editDogFragment)
+
 
         }
     }

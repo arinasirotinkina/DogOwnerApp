@@ -9,12 +9,21 @@
         android:name="com.example.dogownerapp.presentation.ui.health.HealthFragment"
         android:label="@string/title_health"
         tools:layout="@layout/fragment_health" />
+    <action
+        android:id="@+id/action_dogsListFragment_to_editDogFragment"
+        app:destination="@id/navigation_edit_dog" />
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.dogownerapp.presentation.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_edit_dog"
+        android:name="com.example.dogownerapp.presentation.ui.health.EditDogFragment"
+        android:label="ddd"
+        tools:layout="@layout/fragment_edit_dog" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
