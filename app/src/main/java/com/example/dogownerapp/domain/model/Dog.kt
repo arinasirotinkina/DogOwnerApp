@@ -1,4 +1,4 @@
-package com.example.dogownerapp.models
+package com.example.dogownerapp.domain.model
 
 import java.util.Date
 
@@ -29,8 +29,6 @@ data class Dog(
         treatments.remove(treatment)
     }
 
-    fun getVaccinations(): List<Vaccination> = vaccinations
-    fun getTreatments(): List<Treatment> = treatments
 }
 
 enum class Gender {

@@ -1,4 +1,4 @@
-package com.example.dogownerapp.ui.notifications
+package com.example.dogownerapp.presentation.ui.notifications
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

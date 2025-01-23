@@ -1,4 +1,4 @@
-package com.example.dogownerapp.ui.notifications
+package com.example.dogownerapp.presentation.ui.notifications
 
 import android.os.Bundle
 import android.view.LayoutInflater
