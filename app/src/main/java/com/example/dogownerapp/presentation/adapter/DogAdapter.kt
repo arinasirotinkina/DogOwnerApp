@@ -34,7 +34,7 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback()) {
             binding.breedTextView.text = dog.breed
             binding.weightTextView.text = "${dog.weight} kg"
             binding.ageTextView.text = dog.birthDate.toString()
-            binding.SexTextView.text = dog.gender.toString()
+            binding.genderTextView.text = dog.gender.toString()
         }
     }
 

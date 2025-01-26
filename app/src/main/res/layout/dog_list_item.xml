@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
-        android:id="@+id/SexTextView"
+        android:id="@+id/genderTextView"
         style="@style/dogInfoTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,8 +74,8 @@
         tools:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/SexTextView"
-        app:layout_constraintTop_toBottomOf="@+id/SexTextView" />
+        app:layout_constraintStart_toStartOf="@+id/genderTextView"
+        app:layout_constraintTop_toBottomOf="@+id/genderTextView" />
 
     <TextView
         android:id="@+id/castrationTextView"

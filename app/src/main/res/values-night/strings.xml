@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_dog">Добавить собаку</string>
+    <string name="dog_name">Кличка:</string>
+    <string name="breed">Порода:</string>
+    <string name="gender">Пол:</string>
+    <string name="weight">Вес:</string>
+    <string name="vaccines">Прививки:</string>
+    <string name="treatments">Обработки:</string>
+    <string name="castration">Кастрация</string>
+    <string name="birth_date">Дата рождения</string>
 </resources>
