@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Привет!</string>
+    <string name="welcome_register">Еще нет аккаунта? Зарегистрироваться</string>
+    <string name="login">Войти</string>
+</resources>

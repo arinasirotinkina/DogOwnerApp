@@ -9,4 +9,7 @@
     <string name="treatments">Обработки:</string>
     <string name="castration">Кастрация</string>
     <string name="birth_date">Дата рождения</string>
+    <string name="hello">Привет!</string>
+    <string name="welcome_register">Еще нет аккаунта? Зарегистрироваться</string>
+    <string name="login">Войти</string>
 </resources>
