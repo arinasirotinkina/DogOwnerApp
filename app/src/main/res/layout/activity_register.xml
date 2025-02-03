@@ -8,7 +8,7 @@
     tools:context=".presentation.auth.RegisterActivity">
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/nameEdText"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginTop="52dp"
@@ -20,16 +20,16 @@
         app:layout_constraintTop_toBottomOf="@+id/registrationTextView" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/emailEdText"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginTop="32dp"
         android:ems="12"
         android:hint="Email"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@+id/editTextText"
-        app:layout_constraintStart_toStartOf="@+id/editTextText"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintEnd_toEndOf="@+id/nameEdText"
+        app:layout_constraintStart_toStartOf="@+id/nameEdText"
+        app:layout_constraintTop_toBottomOf="@+id/nameEdText" />
 
     <EditText
         android:id="@+id/passwordEdText"
@@ -39,10 +39,10 @@
         android:ems="12"
         android:hint="Введите пароль"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/editTextText2"
+        app:layout_constraintEnd_toEndOf="@+id/emailEdText"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextText2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintStart_toStartOf="@+id/emailEdText"
+        app:layout_constraintTop_toBottomOf="@+id/emailEdText" />
 
     <EditText
         android:id="@+id/repeatPasswordEdText"

@@ -10,6 +10,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.dogownerapp.databinding.ActivityMainBinding
 import com.example.dogownerapp.presentation.auth.LoginActivity
+import com.example.dogownerapp.presentation.auth.RegisterActivity
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
 
         if (true) {
-            startActivity(Intent(applicationContext, LoginActivity::class.java))
+            startActivity(Intent(applicationContext, RegisterActivity::class.java))
 
         } else {
             runBlocking {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "319711414910",
+    "project_id": "dogownerapp-9e3e3",
+    "storage_bucket": "dogownerapp-9e3e3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319711414910:android:8a16a832627ab35c77a62f",
+        "android_client_info": {
+          "package_name": "com.example.dogownerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABRxQPApNVWZ2jOS78lfDH0UiTFo0K9-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
