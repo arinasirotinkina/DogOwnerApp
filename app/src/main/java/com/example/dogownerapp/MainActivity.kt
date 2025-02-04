@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.dogownerapp.databinding.ActivityMainBinding
 import com.example.dogownerapp.presentation.auth.LoginActivity
 import com.example.dogownerapp.presentation.auth.RegisterActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
@@ -22,10 +23,12 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val auth = FirebaseAuth.getInstance()
 
-
-        if (true) {
-            startActivity(Intent(applicationContext, RegisterActivity::class.java))
+        if (auth.currentUser == null) { // Если пользователь не авторизован
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+            finish() // Закрываем MainActivity, чтобы не вернуться назад
 
         } else {
             runBlocking {

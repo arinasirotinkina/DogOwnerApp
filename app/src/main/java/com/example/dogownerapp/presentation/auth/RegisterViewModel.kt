@@ -2,6 +2,7 @@ package com.example.dogownerapp.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dogownerapp.data.repository.AuthRepositoryImpl
 import com.example.dogownerapp.domain.model.AuthResult
 import com.example.dogownerapp.domain.usecase.auth.RegisterUser
 import kotlinx.coroutines.flow.MutableStateFlow

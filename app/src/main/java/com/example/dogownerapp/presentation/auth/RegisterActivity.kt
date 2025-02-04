@@ -32,7 +32,9 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.activity.compose.setContent
-
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
 
 
 class RegisterActivity : ComponentActivity() {
@@ -80,5 +82,6 @@ class RegisterActivity : ComponentActivity() {
             }
         }*/
     }
+
 
 }

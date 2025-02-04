@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.runtime.android)
     implementation(libs.androidx.storage)
     implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.ui.tooling.preview.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,6 +67,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.14")
+    debugImplementation(libs.androidx.ui.tooling)
     //implementation("com.google.firebase:firebase-core:16.0.1")
     //implementation("com.google.firebase:firebase-messaging:17.4.0")
     // Import the Firebase BoM
