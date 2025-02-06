@@ -3,9 +3,10 @@ package com.example.dogownerapp.domain.usecase.auth
 import com.example.dogownerapp.domain.model.AuthResult
 import com.example.dogownerapp.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class RegisterUser(private val repository: AuthRepository) {
+class LoginUseCase @Inject constructor (private val repository: AuthRepository) {
     suspend fun execute(email: String, password: String): Flow<AuthResult> {
-        return repository.register(email, password)
+        return repository.login(email, password)
     }
 }

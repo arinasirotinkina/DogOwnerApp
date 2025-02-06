@@ -2,7 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
-
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -69,6 +70,11 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.14")
     debugImplementation(libs.androidx.ui.tooling)
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    //implementation("com.google.dagger:hilt-android:2.48")
+    //kapt("com.google.dagger:hilt-compiler:2.48")
     //implementation("com.google.firebase:firebase-core:16.0.1")
     //implementation("com.google.firebase:firebase-messaging:17.4.0")
     // Import the Firebase BoM

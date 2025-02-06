@@ -5,8 +5,9 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import javax.inject.Inject
 
-class FirebaseAuthDataSource(
+class FirebaseAuthDataSource @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) {
     fun login(email: String, password: String): Flow<AuthResult> = callbackFlow {
