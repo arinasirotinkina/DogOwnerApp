@@ -1,4 +1,4 @@
-package com.example.dogownerapp.presentation.ui.health
+package com.example.dogownerapp.presentation.main.health
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

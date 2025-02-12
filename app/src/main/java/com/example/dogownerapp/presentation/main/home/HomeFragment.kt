@@ -1,4 +1,4 @@
-package com.example.dogownerapp.presentation.ui.home
+package com.example.dogownerapp.presentation.main.home
 
 import android.content.Intent
 import android.os.Bundle

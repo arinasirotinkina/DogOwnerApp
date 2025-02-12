@@ -83,10 +83,10 @@ dependencies {
     //implementation("com.google.firebase:firebase-messaging")
 
     // Основные зависимости для Jetpack Compose
-    //implementation("androidx.compose.ui:ui:1.5.14")  // Основной UI Compose
+    //implementation("androidx.compose.main:main:1.5.14")  // Основной UI Compose
     //implementation("androidx.compose.material:material:1.5.14")  // Material Components
-    //implementation("androidx.compose.ui:ui-tooling-preview:1.5.14")  // Для предварительного просмотра UI
-    //debugImplementation("androidx.compose.ui:ui-tooling:1.5.14") // Для дебага
+    //implementation("androidx.compose.main:main-tooling-preview:1.5.14")  // Для предварительного просмотра UI
+    //debugImplementation("androidx.compose.main:main-tooling:1.5.14") // Для дебага
 
     // Навигация Compose (если используется)
     //implementation("androidx.navigation:navigation-compose:2.5.0")  // Для навигации в Compose

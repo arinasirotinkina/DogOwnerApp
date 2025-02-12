@@ -1,4 +1,4 @@
-package com.example.dogownerapp.presentation.ui.dashboard
+package com.example.dogownerapp.presentation.main.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater

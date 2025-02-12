@@ -1,16 +1,21 @@
-package com.example.dogownerapp.presentation.ui.health
+package com.example.dogownerapp.presentation.main.health
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.dogownerapp.domain.model.AuthResult
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.repository.DogRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class HealthViewModel : ViewModel() {
+@HiltViewModel
+class HealthViewModel @Inject constructor(): ViewModel() {
     private val dogRepository = DogRepository()
-
-    private val _dogs = MutableLiveData<List<Dog>>()
-    val dogs: LiveData<List<Dog>> get() = _dogs
+    private val _dogs = MutableStateFlow<List<Dog>>(emptyList())
+    val dogs: StateFlow<List<Dog>> = _dogs
 
     init {
         loadDogs()

@@ -1,7 +1,9 @@
 package com.example.dogownerapp
 
+import Main
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -10,6 +12,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.dogownerapp.databinding.ActivityMainBinding
 import com.example.dogownerapp.presentation.auth.AuthActivity
+import com.example.dogownerapp.presentation.ui.CustomTheme
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.runBlocking
 
@@ -31,7 +34,12 @@ class MainActivity : AppCompatActivity() {
 
         } else {
             runBlocking {
-                val navView: BottomNavigationView = binding.navView
+                setContent {
+                    CustomTheme {
+                        Main()
+                    }
+                }
+                /*val navView: BottomNavigationView = binding.navView
 
                 val navController = findNavController(R.id.nav_host_fragment_activity_main)
                 // Passing each menu ID as a set of Ids because each
@@ -42,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
                 setupActionBarWithNavController(navController, appBarConfiguration)
-                navView.setupWithNavController(navController)
+                navView.setupWithNavController(navController)*/
             }
         }
 

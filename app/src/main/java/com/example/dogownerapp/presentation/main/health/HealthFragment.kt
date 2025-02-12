@@ -1,4 +1,4 @@
-package com.example.dogownerapp.presentation.ui.health
+package com.example.dogownerapp.presentation.main.health
 
 import android.os.Bundle
 import android.util.Log
@@ -31,7 +31,7 @@ class HealthFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = DogAdapter()
         binding.dogsRecView.layoutManager = LinearLayoutManager(requireContext())
@@ -60,7 +60,7 @@ class HealthFragment : Fragment() {
 
 
         }
-    }
+    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()

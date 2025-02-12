@@ -1,4 +1,4 @@
-package com.example.dogownerapp.presentation.ui.home
+package com.example.dogownerapp.presentation.main.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
