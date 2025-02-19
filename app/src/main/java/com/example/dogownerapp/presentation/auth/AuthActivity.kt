@@ -9,7 +9,6 @@ import com.example.dogownerapp.data.datasource.FirebaseAuthDataSource
 import com.example.dogownerapp.data.repository.AuthRepositoryImpl
 import com.example.dogownerapp.databinding.ActivityRegisterBinding
 import com.example.dogownerapp.domain.usecase.auth.RegistrationUseCase
-import com.example.dogownerapp.presentation.factory.AuthViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -25,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AuthActivity : ComponentActivity() {
-    private lateinit var binding: ActivityRegisterBinding
+    //private lateinit var binding: ActivityRegisterBinding
     private val viewModel: AuthViewModel by viewModels()
 
 

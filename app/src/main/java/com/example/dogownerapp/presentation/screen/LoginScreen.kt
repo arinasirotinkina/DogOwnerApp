@@ -148,5 +148,5 @@ val customColors = lightColorScheme(
     onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.Black,
-    onSurface = Color.Black
+    onSurface = Color(0xFFF5BC96)
 )

@@ -1,17 +1,12 @@
 package com.example.dogownerapp.domain.repository
 
 import com.example.dogownerapp.domain.model.Dog
+import kotlinx.coroutines.flow.Flow
 
-class DogRepository {
-    private val dogList = mutableListOf<Dog>()
-
-    fun getDogs(): List<Dog> = dogList
-
-    fun addDog(dog: Dog) {
-        dogList.add(dog)
-    }
-
-    fun removeDog(dog: Dog) {
-        dogList.remove(dog)
-    }
+interface DogRepository {
+    fun getDogs(): Flow<List<Dog>>
+    fun getDogById(dogId: String): Flow<Dog>
+    suspend fun addDog(dog: Dog)
+    suspend fun removeDog(dogId: String)
+    suspend fun updateDog(dog: Dog, dogId: String)
 }

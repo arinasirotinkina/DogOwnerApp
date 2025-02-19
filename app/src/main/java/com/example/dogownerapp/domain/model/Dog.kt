@@ -1,19 +1,23 @@
 package com.example.dogownerapp.domain.model
 
+import com.google.firebase.firestore.PropertyName
 import java.util.Date
 
 data class Dog(
-    val name: String,
-    val breed: String,
-    val birthDate: Date,
-    val gender: Gender,
-    var weight: Double,
-    val castration: Boolean,
-    val sterilization: Boolean,
-    val vaccinations: MutableList<Vaccination> = mutableListOf(),
-    val treatments: MutableList<Treatment> = mutableListOf()
+    val id: String = "",
+    val name: String = "",
+    val breed: String = "",
+    val birthDate: String = "",
+    val gender: Gender = Gender.MALE,
+    var weight: Double = 0.0,
+    val castration: Boolean = false,
+    val sterilization: Boolean = false,
+    val vaccinations: List<Vaccination> = mutableListOf(),
+    val treatments: List<Treatment> = mutableListOf()
 ) {
-    fun addVaccination(vaccination: Vaccination) {
+    constructor() : this("", "", "", "", Gender.MALE, 0.0, false, false)
+
+    /*fun addVaccination(vaccination: Vaccination) {
         vaccinations.add(vaccination)
     }
 
@@ -27,8 +31,7 @@ data class Dog(
 
     fun removeTreatment(treatment: Treatment) {
         treatments.remove(treatment)
-    }
-
+    }*/
 }
 
 enum class Gender {
@@ -37,12 +40,11 @@ enum class Gender {
 }
 
 data class Vaccination(
-    val name: String,
-    val date: Date
+    val name: String = "",
+    val date: String = ""
 )
 
 data class Treatment(
-    val name: String,
-    val date: Date
+    val name: String = "",
+    val date: String = ""
 )
-
