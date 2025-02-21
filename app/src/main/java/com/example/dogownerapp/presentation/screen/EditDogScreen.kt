@@ -82,7 +82,7 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
             isCastrated = dog.castration
         }
     }*/
-    //var isLoading by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(true) }
 
     val dog by viewModel.dog.collectAsState()
 

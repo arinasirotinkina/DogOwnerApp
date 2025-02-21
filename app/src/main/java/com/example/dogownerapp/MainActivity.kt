@@ -10,6 +10,7 @@ import com.example.dogownerapp.presentation.auth.AuthActivity
 import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 import com.example.dogownerapp.presentation.ui.CustomTheme
+import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
@@ -18,6 +19,7 @@ import kotlinx.coroutines.runBlocking
 class MainActivity : AppCompatActivity() {
     private val healthViewModel: HealthViewModel by viewModels()
     private val editDogViewModel: EditDogViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             runBlocking {
                 setContent {
                     CustomTheme {
-                        Main(healthViewModel, editDogViewModel)
+                        Main(healthViewModel, editDogViewModel, userViewModel)
                     }
                 }
             }
