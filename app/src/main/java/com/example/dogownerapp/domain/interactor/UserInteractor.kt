@@ -11,5 +11,8 @@ class UserInteractor @Inject constructor (private val repository: UserRepository
     fun loadUser(): Flow<User> {
         return repository.getUser()
     }
+    suspend fun updateUser(user: User) {
+        repository.updateUser(user)
+    }
 
 }

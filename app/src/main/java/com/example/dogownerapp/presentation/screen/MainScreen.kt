@@ -32,12 +32,14 @@ import com.example.dogownerapp.presentation.auth.AuthActivity
 import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 import com.example.dogownerapp.presentation.screen.EditDog
+import com.example.dogownerapp.presentation.screen.EditProfile
 import com.example.dogownerapp.presentation.screen.Health
 import com.example.dogownerapp.presentation.screen.Home
 import com.example.dogownerapp.presentation.screen.customColors
 import com.example.dogownerapp.presentation.ui.CustomTheme
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
+import java.util.Date
 
 
 @Composable
@@ -68,7 +70,7 @@ fun Main(healthViewModel: HealthViewModel,
                     composable(NavRoutes.Health.route) { Health(healthViewModel, navController) }
                     composable(NavRoutes.Planning.route) { Planning()  }
                     composable(NavRoutes.Care.route) { Care()  }
-                    composable(NavRoutes.Home.route) { Home(userViewModel) }
+                    composable(NavRoutes.Home.route) { Home(userViewModel, navController) }
                     composable(
                         route = "edit_dog/{dogId}?",
                         arguments = listOf(navArgument("dogId") {
@@ -80,6 +82,7 @@ fun Main(healthViewModel: HealthViewModel,
                         EditDog(editDogViewModel, healthViewModel, navController, dogId)
                     }
                     composable(NavRoutes.EditDog.route) { EditDog(editDogViewModel, healthViewModel, navController, null) }
+                    composable(NavRoutes.EditProfile.route) { EditProfile(userViewModel, navController) }
 
                 }
                 /*NavHost(navController, startDestination = NavRoutes.Home.route, modifier = Modifier.weight(1f)) {
@@ -191,7 +194,7 @@ data class BarItem(
 
 @Composable
 fun Planning(){
-    Text("Contact Page", fontSize = 30.sp)
+    CalendarView()
 }
 @Composable
 fun Care(){
@@ -207,6 +210,7 @@ sealed class NavRoutes(val route: String) {
     object Home : NavRoutes("home")
     object EditDog : NavRoutes("edit_dog")
     object UpdateDog : NavRoutes("update_dog")
+    object EditProfile : NavRoutes("edit_profile")
 }
 /* val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

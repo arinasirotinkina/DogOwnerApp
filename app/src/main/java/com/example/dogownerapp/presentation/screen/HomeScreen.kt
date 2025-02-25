@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.dogownerapp.data.datasource.FirebaseAuthDataSource
 import com.example.dogownerapp.presentation.auth.AuthActivity
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
@@ -32,7 +33,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun Home(userViewModel: UserViewModel){
+fun Home(userViewModel: UserViewModel, navController: NavController){
     var fauth = FirebaseAuth.getInstance()
     var firestore = FirebaseFirestore.getInstance()
     var f = FirebaseAuthDataSource(fauth, firestore)
@@ -75,10 +76,10 @@ fun Home(userViewModel: UserViewModel){
 
 
         }
-        SettingsItem("Редактировать профиль",)
-        SettingsItem("Архив")
-        SettingsItem("Уведомления")
-        SettingsItem("Помощь")
+        SettingsItem("Редактировать профиль", "edit_profile", navController)
+        SettingsItem("Архив", "edit_profile", navController)
+        SettingsItem("Уведомления", "edit_profile", navController)
+        SettingsItem("Помощь", "edit_profile", navController)
         //SettingsItem("Выйти")
         Space()
         Button(
@@ -100,7 +101,7 @@ fun Home(userViewModel: UserViewModel){
 }
 
 @Composable
-fun SettingsItem(textVal: String) {
+fun SettingsItem(textVal: String, route: String, navController: NavController) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -109,6 +110,9 @@ fun SettingsItem(textVal: String) {
             .border(1.dp, customColors.primary, RoundedCornerShape(16.dp)) // Красная обводка
             .background(Color.White) // Фон внутри
             .padding(16.dp)
+            .clickable {
+                navController.navigate("edit_profile")
+            }
     ) {
         Text(
             text = textVal,
@@ -118,7 +122,4 @@ fun SettingsItem(textVal: String) {
 
 
     }
-}
-fun ii() {
-
 }

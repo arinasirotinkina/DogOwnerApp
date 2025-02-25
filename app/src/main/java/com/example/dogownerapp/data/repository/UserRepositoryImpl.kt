@@ -36,7 +36,15 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUser(user: User) {
-        TODO("Not yet implemented")
+        val userDocument = firestore.collection("users").document(userId)
+        userDocument.update(
+            "name", user.name,
+            "email", user.email,
+            "birthDate", user.birthDate,
+            "phoneNumber", user.phoneNumber,
+            "adress", user.adress
+        ).await()
     }
+
 
 }

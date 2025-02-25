@@ -32,4 +32,10 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun updateUser(user: User) {
+        viewModelScope.launch {
+            userInteractor.updateUser(user)
+        }
+    }
+
 }
