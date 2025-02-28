@@ -1,16 +1,14 @@
+package com.example.dogownerapp.presentation.screen.auth
 import android.content.Intent
-import androidx.navigation.compose.composable
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
@@ -28,28 +26,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHost
-import androidx.navigation.NavHostController
 import com.example.dogownerapp.MainActivity
 import com.example.dogownerapp.R
 import com.example.dogownerapp.domain.model.AuthResult
 import com.example.dogownerapp.presentation.auth.AuthViewModel
-import com.example.dogownerapp.presentation.screen.LoginScreen
-import com.example.dogownerapp.presentation.screen.customColors
 
 
 @Composable
-fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) {
+fun LoginScreen( viewModel: AuthViewModel, navController: NavController) {
     val state by viewModel.authResult.collectAsState()
     var email by remember { mutableStateOf("") }
     val activity = LocalActivity.current
     var password by remember { mutableStateOf("") }
-    var repeatPassword by remember { mutableStateOf("") }
-    var passwordGo by remember { mutableStateOf(true) }
 
     MaterialTheme(colorScheme = customColors) {
         Column(
@@ -58,10 +49,9 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-
             Image(
                 painter = painterResource(R.drawable.start_image),
-                contentDescription = "Start Image",
+                contentDescription = "Start picture",
                 modifier = Modifier
                     .size(200.dp)
                     .align(Alignment.CenterHorizontally)
@@ -71,11 +61,12 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
 
             Text(
                 text = stringResource(R.string.app_name),
-                color = customColors.primary,
+                color = colorResource(R.color.primary_bright),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
+
             Space()
 
             TextField(
@@ -104,60 +95,35 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
-            Space()
-
-            TextField(
-                value = repeatPassword,
-                onValueChange = { repeatPassword = it },
-                label = { Text("Repeat Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.background),
-                    unfocusedContainerColor = colorResource(R.color.background),
-                    disabledContainerColor = colorResource(R.color.background)
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
 
             Space()
 
             Button(
-
-                onClick = {
-                    if (password == repeatPassword) {
-                        viewModel.register(email, password)
-                    } else {
-                        passwordGo = false
-                    }
-                          },
+                onClick = { viewModel.login(email, password) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Зарегистрироваться")
+                Text("Войти")
             }
 
             Space()
 
             Text(
-                text = stringResource(R.string.welcome_login),
-                color = customColors.onSecondary,
+                text = stringResource(R.string.welcome_register),
+                color = colorResource(R.color.black),
                 fontSize = 16.sp,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .clickable {
-                    navController.navigate("login") {
-                        popUpTo("register") {inclusive = true}
+                        navController.navigate("register") {
+                            popUpTo("login") {inclusive = true}
+                        }
                     }
-                }
             )
 
             Space()
-            if (!passwordGo) {
-                ErrorMassage("Пароли не совпадают")
-            }
 
             if (state is AuthResult.Error) {
                 ErrorMassage((state as AuthResult.Error).message)
-
             }
             if (state is AuthResult.Success) {
                 val intent = Intent(activity, MainActivity::class.java)
@@ -168,13 +134,14 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
         }
     }
 }
-@Composable
-fun Space() {
-    Spacer(modifier = Modifier.height(16.dp))
-}
 
-@Composable
-fun ErrorMassage(message: String) {
-    Text(text = message, color = Color.Red)
-}
-
+val customColors = lightColorScheme(
+    primary = Color(0xFFA74B0F),
+    secondary = Color(0xFFBE4D20),
+    background = Color(0xFFFDF0E9),
+    surface = Color(0xFFFACFB2),
+    onPrimary = Color.White,
+    onSecondary = Color.Black,
+    onBackground = Color.Black,
+    onSurface = Color(0xFFF5BC96)
+)

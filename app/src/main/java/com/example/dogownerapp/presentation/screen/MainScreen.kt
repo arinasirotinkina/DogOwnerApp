@@ -1,10 +1,6 @@
-import android.content.Intent
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -14,38 +10,35 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.dogownerapp.R
-import com.example.dogownerapp.data.datasource.FirebaseAuthDataSource
-import com.example.dogownerapp.presentation.auth.AuthActivity
 import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
-import com.example.dogownerapp.presentation.screen.EditDog
-import com.example.dogownerapp.presentation.screen.EditProfile
-import com.example.dogownerapp.presentation.screen.Health
-import com.example.dogownerapp.presentation.screen.Home
-import com.example.dogownerapp.presentation.screen.customColors
+import com.example.dogownerapp.presentation.screen.health.EditDog
+import com.example.dogownerapp.presentation.screen.home.EditProfile
+import com.example.dogownerapp.presentation.screen.health.Health
+import com.example.dogownerapp.presentation.screen.home.Home
+import com.example.dogownerapp.presentation.screen.auth.customColors
+import com.example.dogownerapp.presentation.screen.care.Care
 import com.example.dogownerapp.presentation.ui.CustomTheme
+import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
-import java.util.Date
 
 
 @Composable
 fun Main(healthViewModel: HealthViewModel,
          editDogViewModel: EditDogViewModel,
-         userViewModel: UserViewModel
+         userViewModel: UserViewModel,
+         plansViewModel: PlansViewModel
 ) {
     CustomTheme {
         val navController = rememberNavController()
@@ -68,8 +61,8 @@ fun Main(healthViewModel: HealthViewModel,
                     modifier = Modifier.padding(innerPadding)
                 ) {
                     composable(NavRoutes.Health.route) { Health(healthViewModel, navController) }
-                    composable(NavRoutes.Planning.route) { Planning()  }
-                    composable(NavRoutes.Care.route) { Care()  }
+                    composable(NavRoutes.Planning.route) { Planning(plansViewModel)  }
+                    composable(NavRoutes.Care.route) { Care() }
                     composable(NavRoutes.Home.route) { Home(userViewModel, navController) }
                     composable(
                         route = "edit_dog/{dogId}?",
@@ -85,27 +78,7 @@ fun Main(healthViewModel: HealthViewModel,
                     composable(NavRoutes.EditProfile.route) { EditProfile(userViewModel, navController) }
 
                 }
-                /*NavHost(navController, startDestination = NavRoutes.Home.route, modifier = Modifier.weight(1f)) {
-                    composable(NavRoutes.Health.route) { Health(healthViewModel, navController) }
-                    composable(NavRoutes.Planning.route) { Planning()  }
-                    composable(NavRoutes.Care.route) { Care()  }
-                    composable(NavRoutes.Home.route) { Home(userViewModel) }
-                    //composable(NavRoutes.UpdateDog.route) { Home() }
-                    composable(
-                        route = "edit_dog/{dogId}?",
-                        arguments = listOf(navArgument("dogId") {
-                            nullable = true
-                            defaultValue = null
-                        })
-                    ) { backStackEntry ->
-                        val dogId = backStackEntry.arguments?.getString("dogId")
-                        EditDog(editDogViewModel, healthViewModel, navController, dogId)
-                    }
 
-
-                    composable(NavRoutes.EditDog.route) { EditDog(editDogViewModel, healthViewModel, navController, null) }
-                }
-                BottomNavigationBar(navController = navController)*/
             }
 
         }
@@ -192,14 +165,8 @@ data class BarItem(
     val route: String
 )
 
-@Composable
-fun Planning(){
-    CalendarView()
-}
-@Composable
-fun Care(){
-    Text("About Page", fontSize = 30.sp)
-}
+
+
 
 
 

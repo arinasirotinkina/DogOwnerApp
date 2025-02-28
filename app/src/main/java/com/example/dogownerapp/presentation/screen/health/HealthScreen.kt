@@ -1,4 +1,4 @@
-package com.example.dogownerapp.presentation.screen
+package com.example.dogownerapp.presentation.screen.health
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,6 +36,7 @@ import androidx.navigation.NavController
 import com.example.dogownerapp.R
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.Gender
+import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 
 @Composable

@@ -3,7 +3,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
@@ -15,24 +14,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.CircleShape
-import com.example.dogownerapp.presentation.screen.customColors
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
+import androidx.compose.ui.semantics.SemanticsActions.OnClick
+import androidx.compose.ui.window.Dialog
+import com.example.dogownerapp.presentation.screen.auth.customColors
+import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
+fun Planning(viewModel: PlansViewModel){
+    CalendarView(viewModel)
+}
+@Composable
 fun CalendarView(
+    viewModel: PlansViewModel
     //onDateSelected: (LocalDate) -> Unit
 ) {
     // Состояние текущего месяца (начинается с первого числа)
     var currentMonth by remember { mutableStateOf(LocalDate.now().withDayOfMonth(1)) }
     // Выбранная дата по умолчанию - текущая дата
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    var showDialog by remember { mutableStateOf(false) } // Состояние для отображения диалога
 
     Column(
         modifier = Modifier
@@ -121,6 +131,50 @@ fun CalendarView(
             }
         }
         Spacer(Modifier.height(20.dp))
-        Text("+ Добавить задачу", Modifier.height(24.dp))
+        Text("+ Добавить задачу", Modifier.height(24.dp).clickable {
+            showDialog = true
+        })
+
+        if (showDialog) {
+            CustomDialogExample()
+        }
+    }
+}
+
+@Composable
+fun CustomDialogExample() {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = { showDialog = true }) {
+            Text("Открыть кастомный диалог")
+        }
+
+        if (showDialog) {
+            Dialog(onDismissRequest = { showDialog = false }) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.White,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("Кастомный диалог", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text("Можно добавить любые элементы")
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Button(onClick = { showDialog = false }) {
+                            Text("Закрыть")
+                        }
+                    }
+                }
+            }
+        }
     }
 }

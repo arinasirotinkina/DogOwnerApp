@@ -1,6 +1,6 @@
-package com.example.dogownerapp.presentation.screen
+package com.example.dogownerapp.presentation.screen.home
 
-import Space
+import com.example.dogownerapp.presentation.screen.auth.Space
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dogownerapp.data.datasource.FirebaseAuthDataSource
 import com.example.dogownerapp.presentation.auth.AuthActivity
+import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

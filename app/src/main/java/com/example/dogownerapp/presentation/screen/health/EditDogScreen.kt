@@ -1,4 +1,4 @@
-package com.example.dogownerapp.presentation.screen
+package com.example.dogownerapp.presentation.screen.health
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
