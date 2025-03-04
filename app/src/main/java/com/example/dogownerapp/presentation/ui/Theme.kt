@@ -4,6 +4,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import com.example.dogownerapp.R
 
 // 🎨 Определяем цветовую схему
 private val CustomLightColors = lightColorScheme(
@@ -42,3 +44,4 @@ fun CustomTheme(
         content = content
     )
 }
+

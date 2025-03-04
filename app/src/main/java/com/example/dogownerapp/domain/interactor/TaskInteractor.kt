@@ -9,11 +9,11 @@ import java.util.Date
 import javax.inject.Inject
 
 class TaskInteractor @Inject constructor (private val repository: TaskRepository) {
-    fun loadTasks(day: Date): Flow<List<Task>> {
-        return repository.getTasks(day)
+    fun loadTasks(): Flow<List<Task>> {
+        return repository.getTasks()
     }
 
-    fun getDogById(taskId: String): Flow<Task> {
+    fun getTaskById(taskId: String): Flow<Task> {
         return repository.getTaskById(taskId)
     }
 

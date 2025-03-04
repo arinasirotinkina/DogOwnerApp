@@ -2,10 +2,8 @@ package com.example.dogownerapp.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dogownerapp.domain.interactor.AuthInteractor
 import com.example.dogownerapp.domain.model.AuthResult
-import com.example.dogownerapp.domain.usecase.auth.LogOutUseCase
-import com.example.dogownerapp.domain.usecase.auth.LoginUseCase
-import com.example.dogownerapp.domain.usecase.auth.RegistrationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,9 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val registrationUseCase: RegistrationUseCase,
-    private val loginUseCase: LoginUseCase,
-    private val logOutUseCase: LogOutUseCase
+    private val authInteractor: AuthInteractor
 ) : ViewModel() {
 
     private val _authResult = MutableStateFlow<AuthResult?>(null)
@@ -26,7 +22,7 @@ class AuthViewModel @Inject constructor(
 
     fun register(email: String, password: String) {
         viewModelScope.launch {
-            registrationUseCase.execute(email, password).collectLatest {
+            authInteractor.register(email, password).collectLatest {
                 _authResult.value = it
             }
         }
@@ -34,7 +30,7 @@ class AuthViewModel @Inject constructor(
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            loginUseCase.execute(email, password).collectLatest {
+            authInteractor.login(email, password).collectLatest {
                 _authResult.value = it
             }
         }
@@ -42,7 +38,7 @@ class AuthViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            logOutUseCase.execute()
+            authInteractor.logout()
         }
     }
 

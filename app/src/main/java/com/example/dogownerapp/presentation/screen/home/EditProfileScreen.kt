@@ -19,6 +19,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,9 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.dogownerapp.R
 import com.example.dogownerapp.domain.model.User
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 
@@ -62,33 +66,61 @@ fun EditProfile(viewModel: UserViewModel, navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Имя") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("email") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = name,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White,
+        ),
+            onValueChange = { name = it },
+            label = { Text("Имя") },
+            modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = email,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
+            onValueChange = { email = it },
+            label = { Text("email") },
+            modifier = Modifier.fillMaxWidth())
 
 
         OutlinedTextField(
             value = birthDate,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
             onValueChange = { birthDate = it },
             label = { Text("Дата рождения (ДД.ММ.ГГГГ)") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
-        OutlinedTextField(value = phoneNumber, onValueChange = { phoneNumber = it }, label = { Text("Номер телефона") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = phoneNumber,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
+            onValueChange = { phoneNumber = it }, label = { Text("Номер телефона") }, modifier = Modifier.fillMaxWidth())
 
 
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = adress, onValueChange = { adress = it }, label = { Text("Адрес") }, modifier = Modifier.fillMaxWidth())
+        //Spacer(modifier = Modifier.height(16.dp))
+        OutlinedTextField(value = adress,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
+            onValueChange = { adress = it }, label = { Text("Адрес") }, modifier = Modifier.fillMaxWidth())
 
 
         Button(
             onClick = {
-                //val gen = if (gender == "Мальчик") Gender.MALE else Gender.FEMALE
-                val user = User(
-                    //id = dogId ?: "0", // Новый id для добавления, если dogId == null
+                 val user = User(
                     name = name,
                     email = email,
-                    //breed = breed,
                     phoneNumber = phoneNumber,
 
                     birthDate = birthDate,
@@ -101,7 +133,7 @@ fun EditProfile(viewModel: UserViewModel, navController: NavController) {
             },
             modifier = Modifier.align(Alignment.End)
         ) {
-            //Text(text = if (dogId == null) "Добавить собаку" else "Обновить информацию")
+            Text(text = "Сохранить")
         }
     }
 }

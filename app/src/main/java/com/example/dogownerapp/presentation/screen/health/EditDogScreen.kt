@@ -1,5 +1,6 @@
 package com.example.dogownerapp.presentation.screen.health
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -55,33 +56,7 @@ import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 
 @Composable
 fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navController: NavController, dogId: String?) {
-    /*var name by remember { mutableStateOf("") }
-    var breed by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("Мальчик") }
-    var birthDate by remember { mutableStateOf("") }
-    var weight by remember { mutableStateOf("") }
-    var isSterilized by remember { mutableStateOf(false) }
-    var isCastrated by remember { mutableStateOf(false) }
 
-
-
-    val dog by viewModel.dog.collectAsState() // Используйте collectAsState для отслеживания изменений
-
-
-    LaunchedEffect(dogId) {
-        if (dogId != null) {
-            viewModel.getDogbyId(dogId)
-            val dog = viewModel.dog.value
-            // Заполняем поля данными о собаке, если они есть
-            name = dog.name
-            breed = dog.breed
-            gender = if (dog.gender == Gender.MALE) "Мальчик" else "Девочка"
-            birthDate = dog.birthDate
-            weight = dog.weight.toString()
-            isSterilized = dog.sterilization
-            isCastrated = dog.castration
-        }
-    }*/
     var isLoading by remember { mutableStateOf(true) }
 
     val dog by viewModel.dog.collectAsState()
@@ -96,7 +71,7 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
         return
     }
 
-    // Заполняем поля данными о собаке
+    var emptyName by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf(dog.name) }
     var breed by remember { mutableStateOf(dog.breed) }
     var gender by remember { mutableStateOf(if (dog.gender == Gender.MALE) "Мальчик" else "Девочка") }
@@ -104,8 +79,6 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
     var weight by remember { mutableStateOf(dog.weight.toString()) }
     var isSterilized by remember { mutableStateOf(dog.sterilization) }
     var isCastrated by remember { mutableStateOf(dog.castration) }
-    //var vaccineList by remember { mutableStateOf(viewModel.vaccines) }
-    //var treatList by remember { mutableStateOf(viewModel.treatments) }
     var newVaccineName by remember { mutableStateOf("") }
     var newVaccineDate by remember { mutableStateOf("") }
     var newTreatmentName by remember { mutableStateOf("") }
@@ -176,7 +149,6 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
 
         OutlinedTextField(value = newVaccineName, onValueChange = { newVaccineName = it }, label = { Text("Название прививки") }, modifier = Modifier.fillMaxWidth())
 
-        // Поле для ввода даты прививки
         OutlinedTextField(
             value = newVaccineDate,
             onValueChange = { newVaccineDate = it },
@@ -185,7 +157,6 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
-        // Кнопка "Добавить прививку"
         Button(
             onClick = {
                 if (newVaccineName.isNotBlank() && newVaccineDate.isNotBlank()) {
@@ -280,34 +251,47 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
 
         Button(
             onClick = {
-                val gen = if (gender == "Мальчик") Gender.MALE else Gender.FEMALE
-                val dog = Dog(
-                    id = dogId ?: "0", // Новый id для добавления, если dogId == null
-                    name = name,
-                    breed = breed,
-                    birthDate = birthDate,
-                    gender = gen,
-                    weight = weight.toDouble(),
-                    castration = isCastrated,
-                    sterilization = isSterilized,
-                    vaccinations = vaccineList,
-                    treatments = treatList
-                )
+                if (name == "") {
+                    emptyName = true
+                }  else {
 
-                if (dogId == null) {
-                    healthViewModel.addDog(dog)
-                } else {
-                    healthViewModel.updateDog(dog, dogId) // Новый метод для обновления информации
-                }
-                viewModel.clear()
+                    val gen = if (gender == "Мальчик") Gender.MALE else Gender.FEMALE
+                    val dog = Dog(
+                        id = dogId ?: "0", // Новый id для добавления, если dogId == null
+                        name = name,
+                        breed = breed,
+                        birthDate = birthDate,
+                        gender = gen,
+                        weight = weight.toDouble(),
+                        castration = isCastrated,
+                        sterilization = isSterilized,
+                        vaccinations = vaccineList,
+                        treatments = treatList
+                    )
 
-                navController.navigate("health") {
-                    popUpTo("edit_dog") { inclusive = true }
+                    if (dogId == null) {
+                        healthViewModel.addDog(dog)
+                    } else {
+                        healthViewModel.updateDog(dog, dogId) // Новый метод для обновления информации
+                    }
+                    viewModel.clear()
+
+                    navController.navigate("health") {
+                        popUpTo("edit_dog") { inclusive = true }
+                    }
                 }
+
             },
             modifier = Modifier.align(Alignment.End)
         ) {
             Text(text = if (dogId == null) "Добавить собаку" else "Обновить информацию")
         }
+        if (emptyName) {
+            Text("Введите кличку собаки!", color = Color.Red)
+        }
+    }
+    BackHandler {
+        viewModel.clear()
+        navController.popBackStack()
     }
 }

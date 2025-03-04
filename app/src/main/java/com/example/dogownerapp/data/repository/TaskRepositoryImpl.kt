@@ -18,7 +18,7 @@ class TaskRepositoryImpl @Inject constructor(
 ) : TaskRepository {
     private val userId: String = auth.currentUser?.uid ?: throw IllegalStateException("User not authenticated")
 
-    override fun getTasks(day: Date): Flow<List<Task>> = callbackFlow {
+    override fun getTasks(): Flow<List<Task>> = callbackFlow {
         val tasksCollection = firestore.collection("users").document(userId).collection("tasks")
 
         val listener = tasksCollection.addSnapshotListener { snapshot, e ->

@@ -17,10 +17,21 @@ data class Dog(
 ) {
     constructor() : this("", "", "", "", Gender.MALE, 0.0, false, false)
 
-    /*fun addVaccination(vaccination: Vaccination) {
-        vaccinations.add(vaccination)
+    fun getVaccinationsList() : String {
+        var listString = ""
+        for (vaccination in vaccinations) {
+            listString += vaccination.name + " - " + vaccination.date + "\n"
+        }
+        return listString
     }
-
+    fun getTreatmentsList() : String {
+        var listString = ""
+        for (treatment in treatments) {
+            listString += treatment.name + " - " + treatment.date + "\n"
+        }
+        return listString
+    }
+/*
     fun removeVaccination(vaccination: Vaccination) {
         vaccinations.remove(vaccination)
     }

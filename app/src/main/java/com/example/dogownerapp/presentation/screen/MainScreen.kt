@@ -122,7 +122,8 @@ fun BottomNavigationBar(navController: NavController) {
                             text = navItem.title,
                             fontSize = 16.sp
                         )
-                    },
+                            },
+
                     colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
                         selectedTextColor = MaterialTheme.colorScheme.onSecondary, // Цвет текста в активном состоянии
                         indicatorColor = customColors.onSurface // Цвет фона активного элемента
@@ -137,23 +138,23 @@ fun BottomNavigationBar(navController: NavController) {
 fun NavBarItems() : List<BarItem>{
     return listOf(
         BarItem(
-            title = "Health",
-            image =  (R.drawable.free_icon_veterinary_2295104),
+            title = "Собака",
+            image =  (R.drawable.doglist_icon),
             route = "health"
         ),
         BarItem(
-            title = "Plans",
-            image =  (R.drawable.planning),
+            title = "Планы",
+            image =  (R.drawable.plans_icon),
             route = "plans"
         ),
         BarItem(
-            title = "Care",
-            image = (R.drawable.specialists),
+            title = "Уход",
+            image = (R.drawable.care_icon),
             route = "care"
         ),
         BarItem(
-            title = "Home",
-            image = (R.drawable.home),
+            title = "Профиль",
+            image = (R.drawable.home_icon),
             route = "home"
         )
     )

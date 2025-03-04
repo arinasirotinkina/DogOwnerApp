@@ -7,7 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -92,12 +94,11 @@ fun DogItem(dog: Dog, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clip(RoundedCornerShape(16.dp)) // Скругленные углы
-            .border(2.dp, customColors.primary, RoundedCornerShape(16.dp)) // Красная обводка
-            .background(Color.White) // Фон внутри
+            .clip(RoundedCornerShape(16.dp))
+            .border(2.dp, customColors.primary, RoundedCornerShape(16.dp))
+            .background(Color.White)
             .padding(16.dp)
             .clickable {
-                //Toast.makeText(context, dogId, Toast.LENGTH_SHORT).show()
                 navController.navigate("edit_dog/$dogId")
             }
     ) {
@@ -108,6 +109,7 @@ fun DogItem(dog: Dog, navController: NavController) {
                 modifier = Modifier.size(100.dp)
             )
             Column {
+                Spacer(Modifier.height(16.dp))
                 Text(
                     text = dog.name,
                     modifier = Modifier.padding(start = 8.dp),
@@ -121,15 +123,38 @@ fun DogItem(dog: Dog, navController: NavController) {
                     fontSize = 20.sp
 
                 )
-                Text(
-                    text = dog.birthDate.toString(),
-                    modifier = Modifier.padding(start = 8.dp),
-                    fontSize = 20.sp
-                )
             }
         }
+        Spacer(Modifier.height(12.dp))
         Text(
-            text = "${dog.weight.toString()} kg",
+            text = dog.birthDate.toString(),
+            modifier = Modifier.padding(start = 8.dp),
+            fontSize = 20.sp
+        )
+        Text(
+            text = "${dog.weight} кг",
+            modifier = Modifier.padding(start = 8.dp),
+            fontSize = 20.sp
+        )
+        Text(
+            text = "Прививки:",
+            color = Color.Gray,
+            modifier = Modifier.padding(start = 8.dp),
+            fontSize = 16.sp
+        )
+        Text(
+            text = dog.getVaccinationsList(),
+            modifier = Modifier.padding(start = 8.dp),
+            fontSize = 20.sp
+        )
+        Text(
+            text = "Обработки от паразитов:",
+            color = Color.Gray,
+            modifier = Modifier.padding(start = 8.dp),
+            fontSize = 16.sp
+        )
+        Text(
+            text = dog.getTreatmentsList(),
             modifier = Modifier.padding(start = 8.dp),
             fontSize = 20.sp
         )

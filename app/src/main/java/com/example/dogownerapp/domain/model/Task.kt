@@ -1,12 +1,16 @@
 package com.example.dogownerapp.domain.model
 
 import android.telephony.mbms.StreamingServiceInfo
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 
-class Task(
-    val date: Date,
-    val name: String,
-    val description: String
+data class Task(
+    val date: String = "",  // Храним дату как строку
+    val name: String = "",
+    val description: String = ""
 ) {
-
+    fun getLocalDate(): LocalDate {
+        return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE)
+    }
 }

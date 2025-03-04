@@ -81,7 +81,9 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.background),
                     unfocusedContainerColor = colorResource(R.color.background),
-                    disabledContainerColor = colorResource(R.color.background)
+                    disabledContainerColor = colorResource(R.color.background),
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -91,12 +93,14 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
             TextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text("Пароль") },
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.background),
                     unfocusedContainerColor = colorResource(R.color.background),
-                    disabledContainerColor = colorResource(R.color.background)
+                    disabledContainerColor = colorResource(R.color.background),
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -105,12 +109,14 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
             TextField(
                 value = repeatPassword,
                 onValueChange = { repeatPassword = it },
-                label = { Text("Repeat Password") },
+                label = { Text("Повторите пароль")},
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.background),
                     unfocusedContainerColor = colorResource(R.color.background),
-                    disabledContainerColor = colorResource(R.color.background)
+                    disabledContainerColor = colorResource(R.color.background),
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
