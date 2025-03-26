@@ -43,18 +43,6 @@ import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 
 @Composable
 fun Health(viewModel: HealthViewModel, navController: NavController){
-    val newDog = Dog(
-        id = "1",
-        name = "Тузик",
-        breed = "Бордер колли",
-        birthDate = "25.07.2005",
-        gender = Gender.MALE,
-        weight = 10.0,
-        castration = false,
-        sterilization = false,
-        vaccinations = arrayListOf()
-        //treatments = arrayListOf(),
-    )
     val scrollState = rememberScrollState()
     //viewModel.addDog(newDog)
     val dogs by viewModel.dogs.collectAsState()

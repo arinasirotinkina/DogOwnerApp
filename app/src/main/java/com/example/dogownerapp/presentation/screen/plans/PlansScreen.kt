@@ -56,7 +56,6 @@ fun CalendarView(viewModel: PlansViewModel) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        // Навигация по месяцам
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,7 +76,6 @@ fun CalendarView(viewModel: PlansViewModel) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Дни недели
         Row(modifier = Modifier.fillMaxWidth()) {
             val daysOfWeek = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
             daysOfWeek.forEach { day ->
@@ -92,7 +90,6 @@ fun CalendarView(viewModel: PlansViewModel) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Дни месяца
         val firstDayIndex = currentMonth.dayOfWeek.value - 1
         val daysInMonth = currentMonth.lengthOfMonth()
         val totalCells = ((firstDayIndex + daysInMonth + 6) / 7) * 7

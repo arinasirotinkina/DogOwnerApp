@@ -1,3 +1,4 @@
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.dogownerapp.R
+import com.example.dogownerapp.domain.model.Recommendation
 import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 import com.example.dogownerapp.presentation.screen.health.EditDog
@@ -29,8 +31,15 @@ import com.example.dogownerapp.presentation.screen.health.Health
 import com.example.dogownerapp.presentation.screen.home.Home
 import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.screen.care.Care
+import com.example.dogownerapp.presentation.screen.care.ChatListScreen
+import com.example.dogownerapp.presentation.screen.care.ChatScreen
+import com.example.dogownerapp.presentation.screen.care.ReadRec
+import com.example.dogownerapp.presentation.screen.care.Recommends
+import com.example.dogownerapp.presentation.screen.care.Veterinary
 import com.example.dogownerapp.presentation.ui.CustomTheme
+import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
+import com.example.dogownerapp.presentation.viewmodel.RecommendsViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 
 
@@ -38,7 +47,9 @@ import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 fun Main(healthViewModel: HealthViewModel,
          editDogViewModel: EditDogViewModel,
          userViewModel: UserViewModel,
-         plansViewModel: PlansViewModel
+         plansViewModel: PlansViewModel,
+         chatViewModel: ChatViewModel,
+         recsViewModel: RecommendsViewModel
 ) {
     CustomTheme {
         val navController = rememberNavController()
@@ -62,8 +73,11 @@ fun Main(healthViewModel: HealthViewModel,
                 ) {
                     composable(NavRoutes.Health.route) { Health(healthViewModel, navController) }
                     composable(NavRoutes.Planning.route) { Planning(plansViewModel)  }
-                    composable(NavRoutes.Care.route) { Care() }
+                    composable(NavRoutes.Care.route) { Care(navController) }
+                    composable(NavRoutes.Veterinary.route) { Veterinary(navController) }
+                    composable(NavRoutes.ChatList.route) { ChatListScreen(navController) }
                     composable(NavRoutes.Home.route) { Home(userViewModel, navController) }
+                    composable(NavRoutes.Recs.route) { Recommends(recsViewModel, navController) }
                     composable(
                         route = "edit_dog/{dogId}?",
                         arguments = listOf(navArgument("dogId") {
@@ -73,6 +87,24 @@ fun Main(healthViewModel: HealthViewModel,
                     ) { backStackEntry ->
                         val dogId = backStackEntry.arguments?.getString("dogId")
                         EditDog(editDogViewModel, healthViewModel, navController, dogId)
+                    }
+                    composable(
+                        route = "chat/{chatId}?",
+                        arguments = listOf(navArgument("chatId") {
+                            nullable = false
+                        })
+                    ) { backStackEntry ->
+                        val chatId = backStackEntry.arguments?.getString("chatId")
+                        ChatScreen(chatViewModel, navController, chatId!!)
+                    }
+                    composable(
+                        route = "read_rec/{recId}?",
+                        arguments = listOf(navArgument("recId") {
+                            nullable = false
+                        })
+                    ) { backStackEntry ->
+                        val recId = backStackEntry.arguments?.getString("recId")
+                        ReadRec(recsViewModel, navController, recId!!)
                     }
                     composable(NavRoutes.EditDog.route) { EditDog(editDogViewModel, healthViewModel, navController, null) }
                     composable(NavRoutes.EditProfile.route) { EditProfile(userViewModel, navController) }
@@ -179,6 +211,10 @@ sealed class NavRoutes(val route: String) {
     object EditDog : NavRoutes("edit_dog")
     object UpdateDog : NavRoutes("update_dog")
     object EditProfile : NavRoutes("edit_profile")
+    object Veterinary : NavRoutes("veterinary")
+    object ChatList : NavRoutes("chat_list")
+    object Chat : NavRoutes("chat")
+    object Recs : NavRoutes("recs")
 }
 /* val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

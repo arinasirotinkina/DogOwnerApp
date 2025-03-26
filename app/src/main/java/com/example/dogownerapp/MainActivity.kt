@@ -10,7 +10,9 @@ import com.example.dogownerapp.presentation.auth.AuthActivity
 import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 import com.example.dogownerapp.presentation.ui.CustomTheme
+import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
+import com.example.dogownerapp.presentation.viewmodel.RecommendsViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +24,8 @@ class MainActivity : AppCompatActivity() {
     private val editDogViewModel: EditDogViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val plansViewModel: PlansViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels()
+    private val recsViewModel: RecommendsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +35,14 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)
             finish()
-        } else {
+        }
+        else {
             runBlocking {
                 setContent {
                     CustomTheme {
-                        Main(healthViewModel, editDogViewModel, userViewModel, plansViewModel)
+                        Main(healthViewModel, editDogViewModel,
+                            userViewModel, plansViewModel,
+                            chatViewModel, recsViewModel)
                     }
                 }
             }

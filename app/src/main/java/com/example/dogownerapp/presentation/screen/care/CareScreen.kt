@@ -2,6 +2,7 @@ package com.example.dogownerapp.presentation.screen.care
 
 import android.content.Intent
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,29 +18,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dogownerapp.R
+import com.example.dogownerapp.presentation.MapsActivity
 import com.example.dogownerapp.presentation.auth.AuthActivity
 import com.example.dogownerapp.presentation.screen.auth.Space
 import com.example.dogownerapp.presentation.screen.auth.customColors
 
 @Composable
-fun Care(){
+fun Care(navController: NavController){
     Column {
-        CareItem("Чаты")
-        CareItem("Грумеры")
-        CareItem("Ветеринары")
-        CareItem("Догситтеры")
-        CareItem("Рекомендации")
-
+        CareItem("Чаты", navController,"chat_list")
+        CareItem("Грумеры", navController,"veterinary")
+        CareItem("Ветеринары",navController, "veterinary")
+        CareItem("Догситтеры", navController,"veterinary")
+        CareItem("Рекомендации", navController,"recs")
+        val context = LocalContext.current
+        Button(onClick = {
+            // Запуск фрагмента
+            val intent = Intent(context, MapsActivity::class.java)
+            context.startActivity(intent)
+        }) {
+            Text("Открыть фрагмент")
+        }
     }
 
 }
 
 @Composable
-fun CareItem(textVal: String) {
+fun CareItem(textVal: String, navController: NavController, route: String) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -49,7 +60,7 @@ fun CareItem(textVal: String) {
             .background(Color.White) // Фон внутри
             .padding(16.dp)
             .clickable {
-                //navController.navigate("edit_profile")
+                navController.navigate(route)
             }
     ) {
         Text(
