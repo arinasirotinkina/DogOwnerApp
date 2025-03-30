@@ -139,20 +139,7 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
 
             Space()
 
-            Text(
-                text = stringResource(R.string.welcome_login),
-                color = customColors.onSecondary,
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable {
-                    navController.navigate("login") {
-                        popUpTo("register") {inclusive = true}
-                    }
-                }
-            )
 
-            Space()
             if (!passwordGo) {
                 ErrorMassage("Пароли не совпадают")
             }
@@ -161,6 +148,35 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
                 ErrorMassage((state as AuthResult.Error).message)
 
             }
+
+            Text(
+                text = stringResource(R.string.welcome_login),
+                color = customColors.onSecondary,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clickable {
+                        navController.navigate("login") {
+                            popUpTo("register") {inclusive = true}
+                        }
+                    }
+            )
+
+            Spacer(Modifier.size(30.dp))
+
+            Text(
+                text = "Зарегистрироваться как специалист",
+                color = customColors.primary,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clickable {
+                        navController.navigate("register_specialist") {
+                            popUpTo("register") {inclusive = true}
+                        }
+                    }
+            )
+
             if (state is AuthResult.Success) {
                 val intent = Intent(activity, MainActivity::class.java)
                 activity?.startActivity(intent)

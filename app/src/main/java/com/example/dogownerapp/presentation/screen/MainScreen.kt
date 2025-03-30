@@ -9,6 +9,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.dogownerapp.R
 import com.example.dogownerapp.domain.model.Recommendation
+import com.example.dogownerapp.presentation.auth.AuthViewModel
 import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 import com.example.dogownerapp.presentation.screen.health.EditDog
@@ -36,13 +38,30 @@ import com.example.dogownerapp.presentation.screen.care.ChatScreen
 import com.example.dogownerapp.presentation.screen.care.ReadRec
 import com.example.dogownerapp.presentation.screen.care.Recommends
 import com.example.dogownerapp.presentation.screen.care.Veterinary
+import com.example.dogownerapp.presentation.screen.specialist.SpecialistVersion
 import com.example.dogownerapp.presentation.ui.CustomTheme
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
 import com.example.dogownerapp.presentation.viewmodel.RecommendsViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
+import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
 
-
+@Composable
+fun SubMain(healthViewModel: HealthViewModel, editDogViewModel: EditDogViewModel,
+            userViewModel: UserViewModel, plansViewModel: PlansViewModel,
+            chatViewModel: ChatViewModel, recsViewModel: RecommendsViewModel,
+            profileViewModel: ProfileViewModel, authViewModel: AuthViewModel
+) {
+    val user by userViewModel.user.collectAsState()
+    if (user.role == "owner") {
+        Main(healthViewModel, editDogViewModel,
+            userViewModel, plansViewModel,
+            chatViewModel, recsViewModel)
+    }
+    else {
+        SpecialistVersion(authViewModel, profileViewModel)
+    }
+}
 @Composable
 fun Main(healthViewModel: HealthViewModel,
          editDogViewModel: EditDogViewModel,
@@ -58,6 +77,7 @@ fun Main(healthViewModel: HealthViewModel,
 
         val bottomBarRoutes = listOf("home", "health", "plans", "care")
 
+        //val bottomBarRoutes = listOf("home", "health", "recs", "plans")
         Scaffold(
             bottomBar = {
                 if (currentRoute in bottomBarRoutes) {
@@ -189,6 +209,7 @@ fun NavBarItems() : List<BarItem>{
             image = (R.drawable.home_icon),
             route = "home"
         )
+
     )
 }
 

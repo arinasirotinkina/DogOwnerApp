@@ -1,5 +1,6 @@
 package com.example.dogownerapp.domain.interactor
 
+import android.util.Log
 import com.example.dogownerapp.domain.model.AuthResult
 import com.example.dogownerapp.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,17 @@ class AuthInteractor @Inject constructor (private val repository: AuthRepository
     }
     suspend fun logout() {
         repository.logout()
+    }
+    suspend fun registerSpecialist(name: String, surname: String,
+                                   email: String, password: String) : Flow<AuthResult>{
+        return repository.registerSpecialist(name, surname, email, password)
+    }
+    fun isAuthorized() : Boolean {
+        return repository.isAuthorized()
+    }
+    suspend fun isOwner() : Flow<Boolean>{
+        Log.i("roleInteractor", "f".toString())
+        return repository.isOwner()
     }
 
 }

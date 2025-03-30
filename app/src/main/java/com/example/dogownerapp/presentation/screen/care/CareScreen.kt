@@ -1,7 +1,10 @@
 package com.example.dogownerapp.presentation.screen.care
 
+import android.app.Activity
 import android.content.Intent
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -31,6 +38,16 @@ import com.example.dogownerapp.presentation.screen.auth.customColors
 
 @Composable
 fun Care(navController: NavController){
+    var selectedAddress by remember { mutableStateOf("Выберите адрес") }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val address = result.data?.getStringExtra("selected_address") ?: "Адрес не найден"
+            selectedAddress = address
+        }
+    }
     Column {
         CareItem("Чаты", navController,"chat_list")
         CareItem("Грумеры", navController,"veterinary")
@@ -39,12 +56,12 @@ fun Care(navController: NavController){
         CareItem("Рекомендации", navController,"recs")
         val context = LocalContext.current
         Button(onClick = {
-            // Запуск фрагмента
             val intent = Intent(context, MapsActivity::class.java)
-            context.startActivity(intent)
+            launcher.launch(intent)
         }) {
             Text("Открыть фрагмент")
         }
+        Text(selectedAddress)
     }
 
 }
