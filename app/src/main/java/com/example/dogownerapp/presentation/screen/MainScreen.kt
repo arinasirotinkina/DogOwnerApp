@@ -36,13 +36,17 @@ import com.example.dogownerapp.presentation.screen.care.Care
 import com.example.dogownerapp.presentation.screen.care.ChatListScreen
 import com.example.dogownerapp.presentation.screen.care.ChatScreen
 import com.example.dogownerapp.presentation.screen.care.ReadRec
+import com.example.dogownerapp.presentation.screen.care.ReadSpecProfile
 import com.example.dogownerapp.presentation.screen.care.Recommends
+import com.example.dogownerapp.presentation.screen.care.SearchSpec
 import com.example.dogownerapp.presentation.screen.care.Veterinary
 import com.example.dogownerapp.presentation.screen.specialist.SpecialistVersion
 import com.example.dogownerapp.presentation.ui.CustomTheme
+import com.example.dogownerapp.presentation.viewmodel.ChatListViewModel
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
 import com.example.dogownerapp.presentation.viewmodel.RecommendsViewModel
+import com.example.dogownerapp.presentation.viewmodel.SpecsViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
 
@@ -50,16 +54,18 @@ import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewMod
 fun SubMain(healthViewModel: HealthViewModel, editDogViewModel: EditDogViewModel,
             userViewModel: UserViewModel, plansViewModel: PlansViewModel,
             chatViewModel: ChatViewModel, recsViewModel: RecommendsViewModel,
-            profileViewModel: ProfileViewModel, authViewModel: AuthViewModel
+            profileViewModel: ProfileViewModel, authViewModel: AuthViewModel,
+            specsViewModel: SpecsViewModel, chatListViewModel: ChatListViewModel
 ) {
-    val user by userViewModel.user.collectAsState()
+    val user = userViewModel.user.collectAsState().value
     if (user.role == "owner") {
         Main(healthViewModel, editDogViewModel,
             userViewModel, plansViewModel,
-            chatViewModel, recsViewModel)
+            chatViewModel, recsViewModel,
+            specsViewModel, chatListViewModel)
     }
     else {
-        SpecialistVersion(authViewModel, profileViewModel)
+        SpecialistVersion(authViewModel, profileViewModel, chatListViewModel, chatViewModel)
     }
 }
 @Composable
@@ -68,7 +74,9 @@ fun Main(healthViewModel: HealthViewModel,
          userViewModel: UserViewModel,
          plansViewModel: PlansViewModel,
          chatViewModel: ChatViewModel,
-         recsViewModel: RecommendsViewModel
+         recsViewModel: RecommendsViewModel,
+         specsViewModel: SpecsViewModel,
+         chatListViewModel: ChatListViewModel
 ) {
     CustomTheme {
         val navController = rememberNavController()
@@ -94,10 +102,14 @@ fun Main(healthViewModel: HealthViewModel,
                     composable(NavRoutes.Health.route) { Health(healthViewModel, navController) }
                     composable(NavRoutes.Planning.route) { Planning(plansViewModel)  }
                     composable(NavRoutes.Care.route) { Care(navController) }
+
                     composable(NavRoutes.Veterinary.route) { Veterinary(navController) }
-                    composable(NavRoutes.ChatList.route) { ChatListScreen(navController) }
+                    composable(NavRoutes.ChatList.route) { ChatListScreen(chatListViewModel,
+                        navController, true) }
+
                     composable(NavRoutes.Home.route) { Home(userViewModel, navController) }
                     composable(NavRoutes.Recs.route) { Recommends(recsViewModel, navController) }
+                    composable(NavRoutes.Specs.route) { SearchSpec(specsViewModel, "", navController, chatViewModel)}
                     composable(
                         route = "edit_dog/{dogId}?",
                         arguments = listOf(navArgument("dogId") {
@@ -109,14 +121,18 @@ fun Main(healthViewModel: HealthViewModel,
                         EditDog(editDogViewModel, healthViewModel, navController, dogId)
                     }
                     composable(
-                        route = "chat/{chatId}?",
+                        route = "chat/{chatId}/name={name}",
                         arguments = listOf(navArgument("chatId") {
                             nullable = false
+                        }, navArgument("name") {
+                            nullable = false // Делаем имя обязательным
                         })
                     ) { backStackEntry ->
-                        val chatId = backStackEntry.arguments?.getString("chatId")
-                        ChatScreen(chatViewModel, navController, chatId!!)
+                        val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                        val name = backStackEntry.arguments?.getString("name") ?: ""
+                        ChatScreen(chatViewModel, navController, chatId, name, true)
                     }
+
                     composable(
                         route = "read_rec/{recId}?",
                         arguments = listOf(navArgument("recId") {
@@ -125,6 +141,15 @@ fun Main(healthViewModel: HealthViewModel,
                     ) { backStackEntry ->
                         val recId = backStackEntry.arguments?.getString("recId")
                         ReadRec(recsViewModel, navController, recId!!)
+                    }
+                    composable(
+                        route = "read_spec/{specId}?",
+                        arguments = listOf(navArgument("specId") {
+                            nullable = false
+                        })
+                    ) { backStackEntry ->
+                        val specId = backStackEntry.arguments?.getString("specId")
+                        ReadSpecProfile(specsViewModel, navController, specId!!)
                     }
                     composable(NavRoutes.EditDog.route) { EditDog(editDogViewModel, healthViewModel, navController, null) }
                     composable(NavRoutes.EditProfile.route) { EditProfile(userViewModel, navController) }
@@ -236,6 +261,8 @@ sealed class NavRoutes(val route: String) {
     object ChatList : NavRoutes("chat_list")
     object Chat : NavRoutes("chat")
     object Recs : NavRoutes("recs")
+    object Specs: NavRoutes("search_spec")
+
 }
 /* val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

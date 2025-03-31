@@ -37,10 +37,13 @@ import com.example.dogownerapp.presentation.screen.health.Health
 import com.example.dogownerapp.presentation.screen.home.EditProfile
 import com.example.dogownerapp.presentation.screen.home.Home
 import com.example.dogownerapp.presentation.ui.CustomTheme
+import com.example.dogownerapp.presentation.viewmodel.ChatListViewModel
+import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
 
 @Composable
-fun SpecialistVersion(authViewModel: AuthViewModel, profileViewModel: ProfileViewModel) {
+fun SpecialistVersion(authViewModel: AuthViewModel, profileViewModel: ProfileViewModel,
+                      chatListViewModel: ChatListViewModel, chatViewModel: ChatViewModel) {
     CustomTheme {
         val navController = rememberNavController()
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -61,7 +64,20 @@ fun SpecialistVersion(authViewModel: AuthViewModel, profileViewModel: ProfileVie
                 ) {
                     composable("profile") { Profile(authViewModel, profileViewModel, navController) }
                     composable("edit_profile") { EditProfileScreen(profileViewModel, navController) }
-                    composable("chats") { ChatsSpecialist() }
+                    composable("chats") { ChatListScreen(chatListViewModel,
+                        navController, false) }
+                    composable(
+                        route = "chat/{chatId}/name={name}",
+                        arguments = listOf(navArgument("chatId") {
+                            nullable = false
+                        }, navArgument("name") {
+                            nullable = false // Делаем имя обязательным
+                        })
+                    ) { backStackEntry ->
+                        val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                        val name = backStackEntry.arguments?.getString("name") ?: ""
+                        ChatScreen(chatViewModel, navController, chatId, name, false)
+                    }
                 }
 
             }

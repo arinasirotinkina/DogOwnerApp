@@ -1,33 +1,38 @@
 package com.example.dogownerapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.dogownerapp.domain.interactor.ChatInteractor
+import com.example.dogownerapp.domain.model.Message
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-class ChatViewModel() : ViewModel() {
-    private val db = FirebaseFirestore.getInstance()
+@HiltViewModel
+class ChatViewModel @Inject constructor(private val interactor: ChatInteractor)
+    : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages = _messages.asStateFlow()
 
 
-     fun loadMessages(chatId: String) {
-        db.collection("chats").document(chatId).collection("messages")
-            .orderBy("timestamp")
-            .addSnapshotListener { snapshot, _ ->
-                val messageList = snapshot?.documents?.map { doc ->
-                    Message(doc.id, doc.getString("text") ?: "", doc.getString("sender") ?: "")
-                } ?: emptyList()
-                _messages.value = messageList
-            }
+     fun loadMessages(personId: String, owner: Boolean) {
+         viewModelScope.launch {
+             interactor.getMessages(owner, personId).collect { mesList ->
+                 _messages.value = mesList
+             }
+         }
     }
 
-    fun sendMessage(text: String, sender: String, chatId: String) {
-        val newMessage = hashMapOf("text" to text, "sender" to sender, "timestamp" to System.currentTimeMillis())
-        db.collection("chats").document(chatId).collection("messages").add(newMessage)
+    fun sendMessage(personId: String, text: String, owner: Boolean) {
+        viewModelScope.launch {
+            val message = Message(text = text, sender = true)
+            interactor.sendMessage(owner, personId, message)
+        }
     }
 }
 

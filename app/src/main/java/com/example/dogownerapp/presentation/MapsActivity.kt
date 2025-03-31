@@ -23,6 +23,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.firestore.GeoPoint
 
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -39,7 +40,8 @@ class MapsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMapsBinding
     private var address: String? = null
-    private var adressPoint: Point? = null
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var mapObjects: MapObjectCollection
 
@@ -80,6 +82,8 @@ class MapsActivity : AppCompatActivity() {
                 }
                 val resultIntent = Intent().apply {
                     putExtra("selected_address", address)
+                    putExtra("selected_latitude", latitude)
+                    putExtra("selected_longitude", longitude)
                 }
                 setResult(Activity.RESULT_OK, resultIntent)
                 finish()
@@ -137,6 +141,8 @@ class MapsActivity : AppCompatActivity() {
         val geocoder = Geocoder(this, Locale("ru", "RU"))
         val addressGeo = geocoder.getFromLocation(point.latitude, point.longitude, 1)
         address = addressGeo?.get(0)?.getAddressLine(0)
+        latitude = point.latitude
+        longitude = point.longitude
         Log.d("Address", address.toString())
         binding.textView2.text = address.toString()
     }

@@ -1,6 +1,9 @@
 package com.example.dogownerapp.domain.model
 
-class Specialist (
+import com.google.firebase.firestore.GeoPoint
+
+data class Specialist (
+    var id: String = "",
     val name: String = "",
     val surname: String = "",
     val email: String = "",
@@ -9,7 +12,9 @@ class Specialist (
     val address: String = "",
     val about: String = "",
     val experience: String = "",
-    val conditions: String = ""
+    val conditions: String = "",
+    val location: GeoPoint = GeoPoint(0.0, 0.0),
+
     ) {
 
 }

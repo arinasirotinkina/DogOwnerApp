@@ -26,6 +26,7 @@ class SpecialistRepositoryImpl @Inject constructor(
             }
             val spec = snapshot?.toObject(Specialist::class.java)
             if (spec != null) {
+                spec.id = specId
                 trySend(spec).isSuccess
             }
         }
@@ -44,7 +45,8 @@ class SpecialistRepositoryImpl @Inject constructor(
             "address", specialist.address,
             "conditions", specialist.conditions,
             "experience", specialist.experience,
-            "specialization", specialist.specialization
+            "specialization", specialist.specialization,
+            "location", specialist.location
         ).await()
     }
 }

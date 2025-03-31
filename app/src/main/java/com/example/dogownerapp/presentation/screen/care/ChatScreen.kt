@@ -3,27 +3,33 @@ package com.example.dogownerapp.presentation.screen.care
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.dogownerapp.domain.model.Chat
+import com.example.dogownerapp.domain.model.Message
+import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
-import com.example.dogownerapp.presentation.viewmodel.Message
+import kotlinx.coroutines.channels.ticker
 
 @Composable
-fun ChatScreen(viewModel: ChatViewModel = viewModel(), navHostController: NavHostController, chatId: String) {
+fun ChatScreen(viewModel: ChatViewModel, navController: NavController, chatId: String, name: String, owner:Boolean) {
+    viewModel.loadMessages(chatId, owner)
     val messages by viewModel.messages.collectAsState()
     var inputText by remember { mutableStateOf(TextFieldValue("")) }
-    viewModel.loadMessages(chatId)
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Чат с пользователем $chatId", style = MaterialTheme.typography.headlineMedium)
+        Text(text = name, style = MaterialTheme.typography.headlineMedium)
 
         LazyColumn(
             modifier = Modifier.weight(1f),
@@ -47,8 +53,8 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel(), navHostController: NavHos
             Button(
                 onClick = {
                     if (inputText.text.isNotBlank()) {
-                        viewModel.sendMessage(inputText.text.toString(), "", chatId)
-                        viewModel.loadMessages(chatId)
+                        viewModel.sendMessage(chatId, inputText.text, owner)
+                        viewModel.loadMessages(chatId, owner)
                         inputText = TextFieldValue("")
                     }
                 },
@@ -63,10 +69,12 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel(), navHostController: NavHos
 @Composable
 fun ChatBubble(message: Message) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+            .padding(start = if (message.sender) 30.dp else 0.dp)
+            .padding(end =  if (message.sender) 0.dp else 30.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (message.sender == "") MaterialTheme.colorScheme.primaryContainer
-            else MaterialTheme.colorScheme.secondaryContainer
+            containerColor = if (message.sender) Color.LightGray
+            else Color.White
         )
     ) {
         Text(

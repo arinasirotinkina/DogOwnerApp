@@ -1,5 +1,6 @@
 package com.example.dogownerapp.presentation.screen.care
 
+import NavRoutes
 import android.app.Activity
 import android.content.Intent
 import androidx.activity.ComponentActivity
@@ -50,7 +51,7 @@ fun Care(navController: NavController){
     }
     Column {
         CareItem("Чаты", navController,"chat_list")
-        CareItem("Грумеры", navController,"veterinary")
+        CareItem("Грумеры", navController,NavRoutes.Specs.route)
         CareItem("Ветеринары",navController, "veterinary")
         CareItem("Догситтеры", navController,"veterinary")
         CareItem("Рекомендации", navController,"recs")

@@ -42,7 +42,8 @@ class UserRepositoryImpl @Inject constructor(
             "email", user.email,
             "birthDate", user.birthDate,
             "phoneNumber", user.phoneNumber,
-            "adress", user.adress
+            "adress", user.adress,
+            "location", user.location
         ).await()
     }
 

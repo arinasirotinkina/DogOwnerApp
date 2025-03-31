@@ -1,6 +1,11 @@
 package com.example.dogownerapp.presentation.screen.specialist
 
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -38,14 +44,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dogownerapp.domain.model.Specialist
 import com.example.dogownerapp.domain.model.User
+import com.example.dogownerapp.presentation.MapsActivity
 import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
+import com.google.firebase.firestore.GeoPoint
 
 @Composable
 fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavController) {
     val spec by profileViewModel.spec.collectAsState()
+    var id by remember { mutableStateOf(spec.id) }
     var name by remember { mutableStateOf(spec.name) }
     var surname by remember { mutableStateOf(spec.surname) }
     var email by remember { mutableStateOf(spec.email) }
@@ -56,6 +66,19 @@ fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavCont
     var conditions by remember { mutableStateOf(spec.conditions) }
     var experience by remember { mutableStateOf(spec.experience) }
     val scrollState = rememberScrollState()
+    var location by remember { mutableStateOf(spec.location) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val addressSelected = result.data?.getStringExtra("selected_address") ?: "Адрес не найден"
+            val latitude = result.data?.getDoubleExtra("selected_latitude", 0.0) ?: 0.0
+            val longitude = result.data?.getDoubleExtra("selected_longitude", 0.0) ?: 0.0
+            address = addressSelected
+            location = GeoPoint(latitude, longitude)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -116,13 +139,36 @@ fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavCont
                 disabledContainerColor = Color.White),
             onValueChange = { phoneNumber = it }, label = { Text("Номер телефона") }, modifier = Modifier.fillMaxWidth())
 
-        OutlinedTextField(value = address,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                disabledContainerColor = Color.White),
-            onValueChange = { address = it }, label = { Text("Адрес") }, modifier = Modifier.fillMaxWidth())
+        val context = LocalContext.current
 
+        Spacer(Modifier.size(8.dp))
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(4.dp))
+                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
+                .background(Color.White)
+                .padding(16.dp)
+                .clickable {
+                    val intent = Intent(context, MapsActivity::class.java)
+                    launcher.launch(intent)
+                }
+        ) {
+            if (address == "-" || address == "") {
+                Text(
+                    text = "Добавить адрес",
+                    color = Color.DarkGray,
+                    fontSize = 16.sp
+                )
+            } else {
+                Text(
+                    text = address,
+                    fontSize = 16.sp
+                )
+            }
+
+
+        }
 
         Column {
             Text(text = "Специализация: ", style = MaterialTheme.typography.bodyMedium)
@@ -181,8 +227,8 @@ fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavCont
 
         Button(
             onClick = {
-                val spec = Specialist(name, surname, email, phoneNumber,
-                    specialization, address, about, experience, conditions)
+                val spec = Specialist(id, name, surname, email, phoneNumber,
+                    specialization, address, about, experience, conditions, location)
                 profileViewModel.updateSpec(spec)
 
                 navController.navigate("profile") {
