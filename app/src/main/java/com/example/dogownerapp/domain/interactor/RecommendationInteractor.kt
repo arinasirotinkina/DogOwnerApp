@@ -12,9 +12,4 @@ class RecommendationInteractor @Inject constructor (private val repository: Reco
     fun loadRecommends(): Flow<List<Recommendation>> {
         return repository.getRecommends()
     }
-
-    fun getRecommendById(recId: String): Flow<Recommendation> {
-        return repository.getRecommendById(recId)
-    }
-
 }

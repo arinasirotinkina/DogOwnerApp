@@ -2,13 +2,10 @@ package com.example.dogownerapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dogownerapp.domain.interactor.ChatInteractor
 import com.example.dogownerapp.domain.model.Message
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +15,6 @@ class ChatViewModel @Inject constructor(private val interactor: ChatInteractor)
     : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages = _messages.asStateFlow()
-
 
      fun loadMessages(personId: String, owner: Boolean) {
          viewModelScope.launch {

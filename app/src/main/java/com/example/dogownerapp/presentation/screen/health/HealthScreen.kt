@@ -1,5 +1,6 @@
 package com.example.dogownerapp.presentation.screen.health
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,15 +20,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Updater
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -35,22 +44,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.dogownerapp.R
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.Gender
 import com.example.dogownerapp.presentation.screen.auth.customColors
+import com.example.dogownerapp.presentation.screen.home.isImageExists
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
+import org.checkerframework.checker.units.qual.Current
+
+
 
 @Composable
 fun Health(viewModel: HealthViewModel, navController: NavController){
     val scrollState = rememberScrollState()
-    //viewModel.addDog(newDog)
+    val randomParam by remember { mutableStateOf(System.currentTimeMillis().toString()) }
     val dogs by viewModel.dogs.collectAsState()
     Column (Modifier.verticalScroll(scrollState)) {
-
         LazyColumn (Modifier.heightIn(0.dp, 3000.dp)) {
             items(dogs) { dog ->
-                DogItem(dog, navController)
+                DogItem(dog, navController, randomParam)
             }
         }
         Box(
@@ -75,9 +88,13 @@ fun Health(viewModel: HealthViewModel, navController: NavController){
 
 
 @Composable
-fun DogItem(dog: Dog, navController: NavController) {
+fun DogItem(dog: Dog, navController: NavController, randomParam: String) {
     val dogId = dog.id
-    val context = LocalContext.current
+    var imageExists by remember { mutableStateOf(false)}
+    var avatarUrl = "http://arinas8t.beget.tech/photo/dogs/$dogId?$randomParam"
+    LaunchedEffect(avatarUrl) {
+        imageExists = isImageExists(avatarUrl)
+    }
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -91,11 +108,22 @@ fun DogItem(dog: Dog, navController: NavController) {
             }
     ) {
         Row {
-            Image(
-                painter = painterResource(id = R.drawable.start_image),
-                contentDescription = null,
-                modifier = Modifier.size(100.dp)
-            )
+            if (imageExists) {
+                Image(
+                    painter = rememberAsyncImagePainter(avatarUrl),
+                    contentDescription = "Avatar",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.start_image),
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
+                )
+            }
             Column {
                 Spacer(Modifier.height(16.dp))
                 Text(
@@ -124,6 +152,9 @@ fun DogItem(dog: Dog, navController: NavController) {
             modifier = Modifier.padding(start = 8.dp),
             fontSize = 20.sp
         )
+
+        Spacer(Modifier.height(12.dp))
+
         Text(
             text = "Прививки:",
             color = Color.Gray,
@@ -146,6 +177,5 @@ fun DogItem(dog: Dog, navController: NavController) {
             modifier = Modifier.padding(start = 8.dp),
             fontSize = 20.sp
         )
-
     }
 }

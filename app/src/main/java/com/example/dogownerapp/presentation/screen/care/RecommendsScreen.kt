@@ -68,7 +68,6 @@ fun Recommends(viewModel: RecommendsViewModel, navController: NavController){
     var nutritionTag by remember { mutableStateOf(true) }
     var educationTag by remember { mutableStateOf(true) }
 
-    //Log.i("Recs", recs.size.toString())
     Column (Modifier.verticalScroll(scrollState)) {
         Button(
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -145,7 +144,6 @@ fun buildText(rec: Recommendation): String {
     if (rec.education) {
         lines.add("Воспитание")
     }
-
     return lines.joinToString(", ")
 }
 

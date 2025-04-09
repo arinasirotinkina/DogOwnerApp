@@ -10,8 +10,10 @@ buildscript {
     repositories {
         google()  // Это необходимо для Jetpack Compose и других зависимостей от Google
         mavenCentral()
+        jcenter()
     }
     dependencies {
+
         classpath("com.google.gms:google-services:4.3.15")
     }
 }

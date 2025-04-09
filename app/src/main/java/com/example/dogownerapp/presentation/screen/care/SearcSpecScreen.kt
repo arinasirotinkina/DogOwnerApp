@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,19 +37,36 @@ import com.example.dogownerapp.domain.model.Specialist
 import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 import com.example.dogownerapp.presentation.viewmodel.SpecsViewModel
+import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 
 @Composable
-fun SearchSpec(viewModel: SpecsViewModel, specialization : String, navController: NavController, chatViewModel: ChatViewModel) {
+fun SearchSpec(viewModel: SpecsViewModel,
+               specialization : String,
+               navController: NavController,
+               userViewModel: UserViewModel) {
     val scrollState = rememberScrollState()
+    var closerState by remember { mutableStateOf(false) }
+    val user by userViewModel.user.collectAsState()
+    if (specialization == "") {
+        viewModel.showFavourites(user.location, user.favourites)
+    } else {
+        viewModel.filterBySpecialization(user.location, specialization)
+    }
     val specs by viewModel.specsToShow.collectAsState()
-
     Column (Modifier.verticalScroll(scrollState)) {
 
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = closerState, onCheckedChange = { closerState = it })
+            Text("Рядом со мной")
+        }
         LazyColumn (Modifier.heightIn(0.dp, 3000.dp)) {
             items(specs) { spec ->
                 SpecItem(spec, navController)
             }
         }
+    }
+    if (closerState) {
+        viewModel.findCloserSpecs(user.location)
     }
 }
 
@@ -70,15 +91,15 @@ fun SpecItem(spec: Specialist, navController: NavController) {
             modifier = Modifier.padding(start = 8.dp),
             color = customColors.primary,
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
+            fontSize = 22.sp
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(8.dp))
 
         Text(
             text = spec.address,
             modifier = Modifier.padding(start = 8.dp),
             color = Color.Gray,
-            fontSize = 16.sp
+            fontSize = 18.sp
         )
         Spacer(Modifier.height(12.dp))
 
@@ -90,8 +111,13 @@ fun SpecItem(spec: Specialist, navController: NavController) {
         )
         Spacer(Modifier.height(12.dp))
 
+        Text(
+            text = spec.prices.substring(0, minOf(spec.prices.length, 100)) + "...",
+            modifier = Modifier.padding(start = 8.dp),
+            color = Color.Black,
+            fontSize = 16.sp
+        )
 
-
-
+        Spacer(Modifier.height(12.dp))
     }
 }

@@ -1,9 +1,7 @@
 package com.example.dogownerapp.domain.interactor
 
 import com.example.dogownerapp.domain.model.Specialist
-import com.example.dogownerapp.domain.model.User
 import com.example.dogownerapp.domain.repository.SpecialistRepository
-import com.example.dogownerapp.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

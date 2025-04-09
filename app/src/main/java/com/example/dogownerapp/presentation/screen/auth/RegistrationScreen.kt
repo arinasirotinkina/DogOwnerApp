@@ -1,6 +1,8 @@
 package com.example.dogownerapp.presentation.screen.auth
 
+import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -24,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,11 +44,14 @@ import com.example.dogownerapp.presentation.auth.AuthViewModel
 @Composable
 fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) {
     val state by viewModel.authResult.collectAsState()
+    var name by remember { mutableStateOf("") }
+    var surname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     val activity = LocalActivity.current
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
     var passwordGo by remember { mutableStateOf(true) }
+    var context = LocalContext.current
 
     MaterialTheme(colorScheme = customColors) {
         Column(
@@ -75,6 +81,39 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
             Space()
 
             TextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Имя") },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = colorResource(R.color.background),
+                    unfocusedContainerColor = colorResource(R.color.background),
+                    disabledContainerColor = colorResource(R.color.background),
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.size(12.dp))
+
+            TextField(
+                value = surname,
+                onValueChange = { surname = it },
+                label = { Text("Фамилия") },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = colorResource(R.color.background),
+                    unfocusedContainerColor = colorResource(R.color.background),
+                    disabledContainerColor = colorResource(R.color.background),
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.size(12.dp))
+
+
+            TextField(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
@@ -88,7 +127,7 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Space()
+            Spacer(Modifier.size(12.dp))
 
             TextField(
                 value = password,
@@ -104,12 +143,12 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
-            Space()
+            Spacer(Modifier.size(12.dp))
 
             TextField(
                 value = repeatPassword,
                 onValueChange = { repeatPassword = it },
-                label = { Text("Повторите пароль")},
+                label = { Text("Повторите пароль") },
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.background),
@@ -121,15 +160,21 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Space()
+            Spacer(Modifier.size(12.dp))
 
             Button(
 
                 onClick = {
-                    if (password == repeatPassword) {
-                        viewModel.register(email, password)
+                    if (name == "") {
+                        showToast(context, "Имя не должно быть пустым!")
+                    } else if (surname == "") {
+                        showToast(context, "Фамилия не должна быть пустой!")
+                    } else if (!isValidPassword(password)) {
+                        showToast(context, "Небезопасный пароль!")
+                    } else if (password != repeatPassword) {
+                        showToast(context, "Пароли не совпадают!")
                     } else {
-                        passwordGo = false
+                        viewModel.register(name, surname, email, password)
                     }
                           },
                 modifier = Modifier.fillMaxWidth()
@@ -139,14 +184,8 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
 
             Space()
 
-
-            if (!passwordGo) {
-                ErrorMassage("Пароли не совпадают")
-            }
-
             if (state is AuthResult.Error) {
-                ErrorMassage((state as AuthResult.Error).message)
-
+                showToast(context, (state as AuthResult.Error).message)
             }
 
             Text(
@@ -196,3 +235,11 @@ fun ErrorMassage(message: String) {
     Text(text = message, color = Color.Red)
 }
 
+fun showToast(context: Context, text: String) {
+    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+}
+
+fun isValidPassword(password: String): Boolean {
+    val regex = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$")
+    return regex.matches(password)
+}

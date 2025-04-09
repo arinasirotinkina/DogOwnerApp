@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -39,43 +40,39 @@ import com.example.dogownerapp.presentation.screen.auth.customColors
 
 @Composable
 fun Care(navController: NavController){
-    var selectedAddress by remember { mutableStateOf("Выберите адрес") }
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val address = result.data?.getStringExtra("selected_address") ?: "Адрес не найден"
-            selectedAddress = address
-        }
-    }
     Column {
-        CareItem("Чаты", navController,"chat_list")
-        CareItem("Грумеры", navController,NavRoutes.Specs.route)
-        CareItem("Ветеринары",navController, "veterinary")
-        CareItem("Догситтеры", navController,"veterinary")
-        CareItem("Рекомендации", navController,"recs")
-        val context = LocalContext.current
-        Button(onClick = {
-            val intent = Intent(context, MapsActivity::class.java)
-            launcher.launch(intent)
-        }) {
-            Text("Открыть фрагмент")
-        }
-        Text(selectedAddress)
-    }
+        CareItem("Чаты",
+            "Ваши диалоги со специалистами: узнайте " +
+                    "подробности и договоритесь о приеме",
+            navController,"chat_list")
+        CareItem("Грумеры",
+            "Поиск специалистов по уходу и стрижке",
+            navController,NavRoutes.Groomers.route)
+        CareItem("Ветеринары",
+            "Поиск врача для собаки",
+            navController, NavRoutes.Vets.route)
+        CareItem("Догситтеры",
+            "Поиск специалиста по передержке и воспитанию собаки",
+            navController,NavRoutes.Dogsitters.route)
+        CareItem("Избранное",
+            "Специалисты, которые вам понравились",
+            navController,NavRoutes.Favourites.route)
 
+        CareItem("Рекомендации",
+            "Статьи об уходе за питомцем, здоровье, питании и воспитании",
+            navController,"recs")
+    }
 }
 
 @Composable
-fun CareItem(textVal: String, navController: NavController, route: String) {
+fun CareItem(textVal: String, textDesc: String, navController: NavController, route: String) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .clip(RoundedCornerShape(16.dp)) // Скругленные углы
-            .border(1.dp, customColors.primary, RoundedCornerShape(16.dp)) // Красная обводка
-            .background(Color.White) // Фон внутри
+            .padding(7.dp).height(112.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .border(1.dp, customColors.primary, RoundedCornerShape(16.dp))
+            .background(Color.White)
             .padding(16.dp)
             .clickable {
                 navController.navigate(route)
@@ -84,10 +81,15 @@ fun CareItem(textVal: String, navController: NavController, route: String) {
         Text(
             text = textVal,
             modifier = Modifier.padding(start = 8.dp),
-            fontSize = 20.sp
+            fontWeight = FontWeight.Bold,
+            fontSize = 22.sp
         )
-
-
+        Spacer(Modifier.size(8.dp))
+        Text(
+            text = textDesc,
+            modifier = Modifier.padding(start = 8.dp),
+            color = Color.Gray,
+            fontSize = 18.sp
+        )
     }
-
 }

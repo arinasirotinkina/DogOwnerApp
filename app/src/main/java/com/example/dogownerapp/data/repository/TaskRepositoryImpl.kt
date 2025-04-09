@@ -26,7 +26,7 @@ class TaskRepositoryImpl @Inject constructor(
                 close(e)
                 return@addSnapshotListener
             }
-            val tasks = snapshot?.documents?.mapNotNull { it.toObject(Task::class.java) } ?: emptyList()
+            val tasks = snapshot?.documents?.mapNotNull { it.toObject(Task::class.java)?.copy(id = it.id) } ?: emptyList()
             trySend(tasks).isSuccess
         }
 
@@ -42,7 +42,7 @@ class TaskRepositoryImpl @Inject constructor(
                 close(e)
                 return@addSnapshotListener
             }
-            val task = snapshot?.toObject(Task::class.java)
+            val task = snapshot?.toObject(Task::class.java)?.copy(id = snapshot.id)
             if (task != null) {
                 trySend(task).isSuccess
             }

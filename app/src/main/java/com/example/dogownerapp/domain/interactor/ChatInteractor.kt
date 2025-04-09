@@ -1,6 +1,5 @@
 package com.example.dogownerapp.domain.interactor
 
-import android.util.Log
 import com.example.dogownerapp.domain.model.Chat
 import com.example.dogownerapp.domain.model.Message
 import com.example.dogownerapp.domain.repository.ChatRepository

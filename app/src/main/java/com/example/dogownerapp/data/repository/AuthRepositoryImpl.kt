@@ -20,8 +20,9 @@ class AuthRepositoryImpl @Inject constructor (private val dataSource: FirebaseAu
         return dataSource.login(email, password)
     }
 
-    override suspend fun register(email: String, password: String): Flow<AuthResult> {
-        return dataSource.register(email, password)
+    override suspend fun register(name: String, surname: String,
+                                  email: String, password: String): Flow<AuthResult> {
+        return dataSource.register(name, surname, email, password)
     }
 
     override suspend fun registerSpecialist(
@@ -39,11 +40,6 @@ class AuthRepositoryImpl @Inject constructor (private val dataSource: FirebaseAu
 
     override fun isAuthorized(): Boolean {
         return dataSource.isAuthorized()
-    }
-
-    override fun isOwner(): Flow<Boolean>  {
-        Log.i("roleRepository", "f".toString())
-        return dataSource.isOwner()
     }
 
     override fun getUser(): Flow<User> = callbackFlow{
@@ -71,7 +67,6 @@ class AuthRepositoryImpl @Inject constructor (private val dataSource: FirebaseAu
         userDocument.update(
             "name", user.name,
             "email", user.email,
-            "birthDate", user.birthDate,
             "phoneNumber", user.phoneNumber,
             "adress", user.adress
         ).await()

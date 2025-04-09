@@ -1,5 +1,9 @@
 package com.example.dogownerapp.presentation.viewmodel
 
+import SaveImageService
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dogownerapp.domain.interactor.DogListInteractor
@@ -37,5 +41,25 @@ class UserViewModel @Inject constructor(
             userInteractor.updateUser(user)
         }
     }
+
+    fun uploadPhoto(uri: Uri, context: Context, onComplete: () -> Unit) {
+        viewModelScope.launch {
+            try {
+
+                val imS = SaveImageService()
+                imS.uploadFileToFTP(uri, context, "users", _user.value.id) // Загружаем фото
+                onComplete() // Вызываем коллбэк после успешной загрузки
+            } catch (e: Exception) {
+                Log.e("UploadPhoto", "Ошибка загрузки фото", e)
+            }
+        }
+    }
+    fun updateFavs(favourites: List<String>) {
+        viewModelScope.launch {
+            userInteractor.updateFavs(favourites)
+        }
+    }
+
+
 
 }

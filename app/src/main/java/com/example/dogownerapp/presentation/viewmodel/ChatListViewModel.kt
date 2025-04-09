@@ -19,7 +19,6 @@ class ChatListViewModel @Inject constructor(private val interactor: ChatInteract
     private val _chats = MutableStateFlow<List<Chat>>(emptyList())
     val chats = _chats.asStateFlow()
 
-
     fun loadChats(owner: Boolean) {
         viewModelScope.launch {
             interactor.getChats(owner).collect { chatsList ->
@@ -27,11 +26,5 @@ class ChatListViewModel @Inject constructor(private val interactor: ChatInteract
 
             }
         }
-    }
-     fun loadChatsn(owner: Boolean) {
-         viewModelScope.launch {
-             interactor.getChats(owner)
-             Log.i("size", _chats.value.size.toString())
-         }
     }
 }

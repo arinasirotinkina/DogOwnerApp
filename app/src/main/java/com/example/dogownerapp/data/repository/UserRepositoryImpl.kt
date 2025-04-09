@@ -26,7 +26,7 @@ class UserRepositoryImpl @Inject constructor(
                 close(e)
                 return@addSnapshotListener
             }
-            val user = snapshot?.toObject(User::class.java)
+            val user = snapshot?.toObject(User::class.java)?.copy(id = snapshot.id)
             if (user != null) {
                 trySend(user).isSuccess
             }
@@ -40,10 +40,16 @@ class UserRepositoryImpl @Inject constructor(
         userDocument.update(
             "name", user.name,
             "email", user.email,
-            "birthDate", user.birthDate,
             "phoneNumber", user.phoneNumber,
             "adress", user.adress,
             "location", user.location
+        ).await()
+    }
+
+    override suspend fun updateFavs(favourites: List<String>) {
+        val userDocument = firestore.collection("users").document(userId)
+        userDocument.update(
+            "favourites", favourites
         ).await()
     }
 

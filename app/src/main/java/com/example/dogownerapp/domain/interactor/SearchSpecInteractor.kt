@@ -11,9 +11,4 @@ class SearchSpecInteractor @Inject constructor (private val repository: SearchSp
     fun loadSpecs(): Flow<List<Specialist>> {
         return repository.getSpecs()
     }
-
-    fun getRecommendById(specId: String): Flow<Specialist> {
-        return repository.getSpecById(specId)
-    }
-
 }

@@ -1,5 +1,9 @@
 package com.example.dogownerapp.data.repository
 
+import SaveImageService
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.repository.DogRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -49,9 +53,22 @@ class DogRepositoryImpl @Inject constructor(
         awaitClose { listener.remove() }
     }
 
-    override suspend fun addDog(dog: Dog) {
+    override suspend fun addDog(dog: Dog, dogId: String) {
         val dogsCollection = firestore.collection("users").document(userId).collection("dogs")
-        dogsCollection.add(dog).await()
+        var documentId: String? = null
+        dogsCollection.add(dog)
+            .addOnSuccessListener { documentReference ->
+                documentId = documentReference.id // Получаем назначенный ID
+                }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Ошибка добавления", e)
+            }.await()
+        if (documentId != null) {
+            val imS = SaveImageService()
+            imS.renameFileOnFTP("dogs", dogId, documentId!!) // Загружаем фото
+
+        }
+
     }
 
     override suspend fun removeDog(dogId: String) {

@@ -29,13 +29,6 @@ import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.screen.care.Care
 import com.example.dogownerapp.presentation.screen.care.ChatListScreen
 import com.example.dogownerapp.presentation.screen.care.ChatScreen
-import com.example.dogownerapp.presentation.screen.care.ReadRec
-import com.example.dogownerapp.presentation.screen.care.Recommends
-import com.example.dogownerapp.presentation.screen.care.Veterinary
-import com.example.dogownerapp.presentation.screen.health.EditDog
-import com.example.dogownerapp.presentation.screen.health.Health
-import com.example.dogownerapp.presentation.screen.home.EditProfile
-import com.example.dogownerapp.presentation.screen.home.Home
 import com.example.dogownerapp.presentation.ui.CustomTheme
 import com.example.dogownerapp.presentation.viewmodel.ChatListViewModel
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
@@ -71,7 +64,7 @@ fun SpecialistVersion(authViewModel: AuthViewModel, profileViewModel: ProfileVie
                         arguments = listOf(navArgument("chatId") {
                             nullable = false
                         }, navArgument("name") {
-                            nullable = false // Делаем имя обязательным
+                            nullable = false
                         })
                     ) { backStackEntry ->
                         val chatId = backStackEntry.arguments?.getString("chatId") ?: ""

@@ -1,29 +1,23 @@
 package com.example.dogownerapp
 
-import Main
 import SubMain
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.collectAsState
 import com.example.dogownerapp.presentation.auth.AuthActivity
 import com.example.dogownerapp.presentation.auth.AuthViewModel
-import com.example.dogownerapp.presentation.screen.specialist.Profile
-import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
-import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
-import com.example.dogownerapp.presentation.ui.CustomTheme
 import com.example.dogownerapp.presentation.viewmodel.ChatListViewModel
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
+import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
+import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
 import com.example.dogownerapp.presentation.viewmodel.RecommendsViewModel
 import com.example.dogownerapp.presentation.viewmodel.SpecsViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
@@ -41,7 +35,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (!authViewModel.isAuthorized()) {
             val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)
@@ -54,24 +47,9 @@ class MainActivity : AppCompatActivity() {
                         profileViewModel, authViewModel, specsViewModel,
                         chatListViewModel)
                 }
-                //authViewModel.checkOwner()
-                /*if (false) {
-                    setContent {
-                        Profile()
-                    }
-                } else {
-                    setContent {
-                        CustomTheme {
-                            Main(
-                                healthViewModel, editDogViewModel,
-                                userViewModel, plansViewModel,
-                                chatViewModel, recsViewModel
-                            )
-                        }
-                    }
-                }*/
             }
 
         }
     }
 }
+

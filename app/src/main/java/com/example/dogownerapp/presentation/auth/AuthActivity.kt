@@ -15,13 +15,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AuthActivity : ComponentActivity() {
-    //private lateinit var binding: ActivityRegisterBinding
     private val viewModel: AuthViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "register") {

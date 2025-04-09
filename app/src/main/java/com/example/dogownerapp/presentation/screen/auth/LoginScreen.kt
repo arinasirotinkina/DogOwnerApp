@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,7 +42,7 @@ fun LoginScreen( viewModel: AuthViewModel, navController: NavController) {
     var email by remember { mutableStateOf("") }
     val activity = LocalActivity.current
     var password by remember { mutableStateOf("") }
-
+    var context = LocalContext.current
     MaterialTheme(colorScheme = customColors) {
         Column(
             modifier = Modifier
@@ -127,7 +128,7 @@ fun LoginScreen( viewModel: AuthViewModel, navController: NavController) {
             Space()
 
             if (state is AuthResult.Error) {
-                ErrorMassage((state as AuthResult.Error).message)
+                showToast(context, (state as AuthResult.Error).message)
             }
             if (state is AuthResult.Success) {
                 val intent = Intent(activity, MainActivity::class.java)

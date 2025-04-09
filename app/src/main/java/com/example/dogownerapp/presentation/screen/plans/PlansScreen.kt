@@ -1,4 +1,6 @@
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,23 +24,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.ui.graphics.LinearGradient
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.SemanticsActions.OnClick
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.window.Dialog
-import com.example.dogownerapp.R
 import com.example.dogownerapp.domain.model.Task
 import com.example.dogownerapp.presentation.screen.auth.customColors
-import com.example.dogownerapp.presentation.screen.health.DogItem
 import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun Planning(viewModel: PlansViewModel){
@@ -49,8 +46,30 @@ fun CalendarView(viewModel: PlansViewModel) {
     var currentMonth by remember { mutableStateOf(LocalDate.now().withDayOfMonth(1)) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var showDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var taskIdEdited by remember { mutableStateOf("")}
+    var taskEdited by remember { mutableStateOf(Task()) }
     var name by remember { mutableStateOf("")}
     var description by remember { mutableStateOf("") }
+    val tasks by viewModel.tasks.collectAsState()
+
+    val dates by viewModel.daysWithTasks.collectAsState()
+
+    val months = hashMapOf(
+        1 to "Январь",
+        2 to "Февраль",
+        3 to "Март",
+        4 to "Апрель",
+        5 to "Май",
+        6 to "Июнь",
+        7 to "Июль",
+        8 to "Август",
+        9 to "Сентябрь",
+        10 to "Октябрь",
+        11 to "Ноябрь",
+        12 to "Декабрь"
+    )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,7 +84,7 @@ fun CalendarView(viewModel: PlansViewModel) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Предыдущий месяц")
             }
             Text(
-                text = currentMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy")),
+                text = months[currentMonth.month.value].toString() + " " + currentMonth.year,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -109,14 +128,14 @@ fun CalendarView(viewModel: PlansViewModel) {
                 } else {
                     val date = currentMonth.withDayOfMonth(dayNumber)
                     val isSelected = date == selectedDate
-                    val hasTasks = viewModel.hasTasksOnDate(date)
-
                     Box(
                         modifier = Modifier
                             .aspectRatio(1f)
                             .padding(4.dp)
                             .clickable {
+                                viewModel.getTasksonDate(date)
                                 selectedDate = date
+
                             }
                             .clip(CircleShape)
                             .background(
@@ -129,7 +148,7 @@ fun CalendarView(viewModel: PlansViewModel) {
                                 text = dayNumber.toString(),
                                 color = Color.Black
                             )
-                            if (hasTasks) {
+                            if (date in dates) {
                                 Box(
                                     modifier = Modifier
                                         .size(6.dp)
@@ -150,14 +169,23 @@ fun CalendarView(viewModel: PlansViewModel) {
             fontSize = 20.sp,
             modifier = Modifier.clickable { showDialog  = true }
         )
+        Spacer(Modifier.height(20.dp))
         LazyColumn (Modifier.heightIn(0.dp, 3000.dp)) {
-            items(viewModel.getTasksonDate(selectedDate)) { task ->
-                TaskItem(task)
+            items(tasks) { task ->
+                if (task.getLocalDate() == selectedDate) TaskItem(task, viewModel) {
+                    name = task.name
+                    description = task.description
+                    taskEdited = task
+                    taskIdEdited = task.id
+                    showEditDialog = true
+                }
             }
         }
 
-        if (showDialog) {
-            Dialog(onDismissRequest = { showDialog = false }) {
+        if (showDialog || showEditDialog) {
+            Dialog(onDismissRequest = {
+                showDialog = false
+                showEditDialog = false}) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     color = Color.White,
@@ -188,15 +216,29 @@ fun CalendarView(viewModel: PlansViewModel) {
                             modifier = Modifier.fillMaxWidth())
 
                         Row {
-                            Button(onClick = { showDialog = false }) {
+                            Button(onClick = {
+                                showDialog = false
+                                showEditDialog = false}) {
                                 Text("Закрыть")
                             }
                             Button(onClick = {
-                                viewModel.addTask(Task(selectedDate.toString(), name, description))
+                                if (name != "") {
+                                    if (showDialog) {
+                                        viewModel.addTask(Task("", selectedDate.toString(), name, description))
+                                    } else if (showEditDialog) {
+                                        taskEdited = Task(taskIdEdited, selectedDate.toString(), name, description)
+                                        viewModel.updateTask(taskEdited, taskIdEdited)
+                                    }
+                                }
                                 name = ""
+                                taskEdited = Task()
+                                taskIdEdited = ""
                                 description = ""
                                 showDialog = false
-                            }) {
+                                showEditDialog = false
+                                viewModel.getTasksonDate(selectedDate)
+                                Log.i("tasks", tasks.size.toString())
+                                }) {
                                 Text("Сохранить")
                             }
                         }
@@ -208,18 +250,41 @@ fun CalendarView(viewModel: PlansViewModel) {
 }
 
 @Composable
-fun TaskItem(task: Task) {
-    Spacer(Modifier.height(20.dp))
-    Text(
-        text = task.name,
-        fontSize = 22.sp,
-        fontWeight = FontWeight.Bold,
-    )
-    Text(
-        text = task.description,
-        fontSize = 20.sp
-    )
+fun TaskItem(task: Task, viewModel: PlansViewModel, onUpdate: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp).clickable { onUpdate() },
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                //.padding(end = 24.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(2.dp, Color.White, RoundedCornerShape(16.dp))
+                .background(Color.White).padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = task.name,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = task.description,
+                    fontSize = 16.sp
+                )
+            }
 
+            IconButton(onClick = { viewModel.removeTask(task.id) }) {
+                Icon(Icons.Default.Delete, contentDescription = "Удалить", tint = Color.Red)
+            }
+        }
+    }
 }
 
 

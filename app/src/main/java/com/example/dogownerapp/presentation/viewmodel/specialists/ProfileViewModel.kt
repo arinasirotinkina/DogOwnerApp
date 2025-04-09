@@ -1,5 +1,9 @@
 package com.example.dogownerapp.presentation.viewmodel.specialists
 
+import SaveImageService
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dogownerapp.domain.interactor.DogListInteractor
@@ -37,6 +41,18 @@ class ProfileViewModel @Inject constructor(
     fun updateSpec(spec: Specialist) {
         viewModelScope.launch {
             specialistInteractor.updateSpecialist(spec)
+        }
+    }
+    fun uploadPhoto(uri: Uri, context: Context, onComplete: () -> Unit) {
+        viewModelScope.launch {
+            try {
+
+                val imS = SaveImageService()
+                imS.uploadFileToFTP(uri, context, "specs", _spec.value.id) // Загружаем фото
+                onComplete()
+            } catch (e: Exception) {
+                Log.e("UploadPhoto", "Ошибка загрузки фото", e)
+            }
         }
     }
 

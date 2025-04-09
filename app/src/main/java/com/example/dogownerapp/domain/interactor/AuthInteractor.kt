@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AuthInteractor @Inject constructor (private val repository: AuthRepository) {
-    suspend fun register(email: String, password: String): Flow<AuthResult> {
-        return repository.register(email, password)
+    suspend fun register(name: String, surname: String,
+                         email: String, password: String): Flow<AuthResult> {
+        return repository.register(name, surname, email, password)
     }
     suspend fun login(email: String, password: String): Flow<AuthResult> {
         return repository.login(email, password)
@@ -22,10 +23,6 @@ class AuthInteractor @Inject constructor (private val repository: AuthRepository
     }
     fun isAuthorized() : Boolean {
         return repository.isAuthorized()
-    }
-    suspend fun isOwner() : Flow<Boolean>{
-        Log.i("roleInteractor", "f".toString())
-        return repository.isOwner()
     }
 
 }

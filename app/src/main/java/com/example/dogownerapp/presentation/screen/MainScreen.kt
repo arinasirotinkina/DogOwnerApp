@@ -39,7 +39,6 @@ import com.example.dogownerapp.presentation.screen.care.ReadRec
 import com.example.dogownerapp.presentation.screen.care.ReadSpecProfile
 import com.example.dogownerapp.presentation.screen.care.Recommends
 import com.example.dogownerapp.presentation.screen.care.SearchSpec
-import com.example.dogownerapp.presentation.screen.care.Veterinary
 import com.example.dogownerapp.presentation.screen.specialist.SpecialistVersion
 import com.example.dogownerapp.presentation.ui.CustomTheme
 import com.example.dogownerapp.presentation.viewmodel.ChatListViewModel
@@ -49,6 +48,9 @@ import com.example.dogownerapp.presentation.viewmodel.RecommendsViewModel
 import com.example.dogownerapp.presentation.viewmodel.SpecsViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 
 @Composable
 fun SubMain(healthViewModel: HealthViewModel, editDogViewModel: EditDogViewModel,
@@ -62,7 +64,7 @@ fun SubMain(healthViewModel: HealthViewModel, editDogViewModel: EditDogViewModel
         Main(healthViewModel, editDogViewModel,
             userViewModel, plansViewModel,
             chatViewModel, recsViewModel,
-            specsViewModel, chatListViewModel)
+            specsViewModel, chatListViewModel, authViewModel)
     }
     else {
         SpecialistVersion(authViewModel, profileViewModel, chatListViewModel, chatViewModel)
@@ -76,16 +78,13 @@ fun Main(healthViewModel: HealthViewModel,
          chatViewModel: ChatViewModel,
          recsViewModel: RecommendsViewModel,
          specsViewModel: SpecsViewModel,
-         chatListViewModel: ChatListViewModel
+         chatListViewModel: ChatListViewModel,
+         authViewModel: AuthViewModel
 ) {
     CustomTheme {
         val navController = rememberNavController()
-
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-
         val bottomBarRoutes = listOf("home", "health", "plans", "care")
-
-        //val bottomBarRoutes = listOf("home", "health", "recs", "plans")
         Scaffold(
             bottomBar = {
                 if (currentRoute in bottomBarRoutes) {
@@ -96,20 +95,30 @@ fun Main(healthViewModel: HealthViewModel,
             Column(Modifier.padding(8.dp)) {
                 NavHost(
                     navController = navController,
-                    startDestination = NavRoutes.Home.route,
+                    startDestination = NavRoutes.Health.route,
                     modifier = Modifier.padding(innerPadding)
                 ) {
+                    composable("health_back") { Health(healthViewModel, navController) }
                     composable(NavRoutes.Health.route) { Health(healthViewModel, navController) }
                     composable(NavRoutes.Planning.route) { Planning(plansViewModel)  }
                     composable(NavRoutes.Care.route) { Care(navController) }
 
-                    composable(NavRoutes.Veterinary.route) { Veterinary(navController) }
                     composable(NavRoutes.ChatList.route) { ChatListScreen(chatListViewModel,
                         navController, true) }
 
-                    composable(NavRoutes.Home.route) { Home(userViewModel, navController) }
+                    composable(NavRoutes.Home.route) { Home(userViewModel, authViewModel, navController) }
                     composable(NavRoutes.Recs.route) { Recommends(recsViewModel, navController) }
-                    composable(NavRoutes.Specs.route) { SearchSpec(specsViewModel, "", navController, chatViewModel)}
+                    composable(NavRoutes.Vets.route) { SearchSpec(specsViewModel, "Ветеринар",
+                        navController, userViewModel)}
+                    composable(NavRoutes.Dogsitters.route) { SearchSpec(specsViewModel, "Догситтер",
+                        navController, userViewModel)}
+                    composable(NavRoutes.Groomers.route) { SearchSpec(specsViewModel, "Грумер",
+                        navController, userViewModel)}
+
+                    composable(NavRoutes.Favourites.route) { SearchSpec(specsViewModel, "",
+                        navController, userViewModel)}
+
+
                     composable(
                         route = "edit_dog/{dogId}?",
                         arguments = listOf(navArgument("dogId") {
@@ -149,7 +158,7 @@ fun Main(healthViewModel: HealthViewModel,
                         })
                     ) { backStackEntry ->
                         val specId = backStackEntry.arguments?.getString("specId")
-                        ReadSpecProfile(specsViewModel, navController, specId!!)
+                        ReadSpecProfile(specsViewModel, navController, specId!!, userViewModel)
                     }
                     composable(NavRoutes.EditDog.route) { EditDog(editDogViewModel, healthViewModel, navController, null) }
                     composable(NavRoutes.EditProfile.route) { EditProfile(userViewModel, navController) }
@@ -215,7 +224,7 @@ fun BottomNavigationBar(navController: NavController) {
 fun NavBarItems() : List<BarItem>{
     return listOf(
         BarItem(
-            title = "Собака",
+            title = "Собаки",
             image =  (R.drawable.doglist_icon),
             route = "health"
         ),
@@ -245,10 +254,6 @@ data class BarItem(
 )
 
 
-
-
-
-
 sealed class NavRoutes(val route: String) {
     object Health : NavRoutes("health")
     object Planning : NavRoutes("plans")
@@ -262,27 +267,10 @@ sealed class NavRoutes(val route: String) {
     object Chat : NavRoutes("chat")
     object Recs : NavRoutes("recs")
     object Specs: NavRoutes("search_spec")
+    object Vets: NavRoutes("vets")
+    object Groomers: NavRoutes("groomers")
+    object Dogsitters: NavRoutes("dogsitters")
+    object Favourites: NavRoutes("favourites")
+
 
 }
-/* val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    val bottomNavVisible = currentRoute !in listOf("edit_dog", "some_other_screen")
-
-    Scaffold(
-        bottomBar = {
-            if (bottomNavVisible) {
-                BottomNavigationBar(navController)
-            }
-        }
-    ) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = "home",
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            composable("home") { HomeScreen(navController) }
-            composable("edit_dog") { EditDogScreen(navController) } // Здесь скрываем меню
-            composable("some_other_screen") { SomeOtherScreen(navController) }
-        }
-    }*/

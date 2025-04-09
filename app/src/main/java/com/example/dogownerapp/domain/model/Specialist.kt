@@ -13,6 +13,7 @@ data class Specialist (
     val about: String = "",
     val experience: String = "",
     val conditions: String = "",
+    val prices: String = "",
     val location: GeoPoint = GeoPoint(0.0, 0.0),
 
     ) {

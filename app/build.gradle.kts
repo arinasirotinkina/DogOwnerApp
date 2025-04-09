@@ -47,7 +47,10 @@ android {
 }
 
 dependencies {
-
+    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("com.amazonaws:aws-android-sdk-s3:2.22.0")
+    implementation("com.amazonaws:aws-android-sdk-core:2.22.0")
+    implementation("commons-net:commons-net:3.8.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

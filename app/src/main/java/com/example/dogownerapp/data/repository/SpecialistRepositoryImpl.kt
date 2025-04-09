@@ -46,6 +46,7 @@ class SpecialistRepositoryImpl @Inject constructor(
             "conditions", specialist.conditions,
             "experience", specialist.experience,
             "specialization", specialist.specialization,
+            "prices", specialist.prices,
             "location", specialist.location
         ).await()
     }

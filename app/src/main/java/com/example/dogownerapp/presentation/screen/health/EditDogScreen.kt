@@ -1,7 +1,12 @@
 package com.example.dogownerapp.presentation.screen.health
 
+import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,9 +37,11 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,12 +53,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.Gender
+import com.example.dogownerapp.presentation.screen.home.isImageExists
 import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 
@@ -58,9 +72,7 @@ import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navController: NavController, dogId: String?) {
 
     var isLoading by remember { mutableStateOf(true) }
-
     val dog by viewModel.dog.collectAsState()
-
     LaunchedEffect(dogId) {
         if (dogId != null) {
             viewModel.getDogbyId(dogId)
@@ -70,7 +82,6 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
         CircularProgressIndicator()
         return
     }
-
     var emptyName by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf(dog.name) }
     var breed by remember { mutableStateOf(dog.breed) }
@@ -86,6 +97,32 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
     val scrollState = rememberScrollState()
     val vaccineList by viewModel.vaccines.collectAsState()
     val treatList by viewModel.treatments.collectAsState()
+    var randomParam = System.currentTimeMillis()
+    var dogIdNew by remember { mutableStateOf("") }
+    if (dogId != null) {
+        dogIdNew = dogId
+    }
+    var avatarUrl by remember { mutableStateOf("http://arinas8t.beget.tech/photo/dogs/$dogIdNew?$randomParam")}
+    var imageExists by remember { mutableStateOf<Boolean?>(null) }
+    val context = LocalContext.current
+    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            imageExists = false
+            if (dogId == null) {
+                dogIdNew = System.currentTimeMillis().toString()
+            } else {
+                dogIdNew = dogId
+            }
+            viewModel.uploadPhoto(uri, context,  dogIdNew) {
+                randomParam = System.currentTimeMillis()
+                avatarUrl = "http://arinas8t.beget.tech/photo/dogs/${dogIdNew}?$randomParam"
+                imageExists = true
+            }
+        }
+    }
+    LaunchedEffect(avatarUrl) {
+        imageExists = isImageExists(avatarUrl)
+    }
 
     Column(
         modifier = Modifier
@@ -98,16 +135,43 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
                 .size(150.dp)
                 .clip(CircleShape)
                 .background(Color.LightGray)
-                .clickable {  },
+                .clickable {
+                    galleryLauncher.launch("image/*")
+                },
             contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = Icons.Default.AccountBox, contentDescription = "Выбрать фото", tint = Color.White)
+            if (imageExists == true) {
+                Image(
+                    painter = rememberAsyncImagePainter(avatarUrl),
+                    contentDescription = "Avatar",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.AccountBox,
+                    contentDescription = "Выбрать фото",
+                    tint = Color.White
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Кличка") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = breed, onValueChange = { breed = it }, label = { Text("Порода") }, modifier = Modifier.fillMaxWidth())
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White),
+            value = name, onValueChange = { name = it }, label = { Text("Кличка") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White),
+            value = breed, onValueChange = { breed = it }, label = { Text("Порода") }, modifier = Modifier.fillMaxWidth())
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -126,6 +190,10 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
         }
 
         OutlinedTextField(
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
             value = birthDate,
             onValueChange = { birthDate = it },
             label = { Text("Дата рождения (ДД.ММ.ГГГГ)") },
@@ -133,23 +201,63 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
-        OutlinedTextField(value = weight, onValueChange = { weight = it }, label = { Text("Вес (кг)") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
+        OutlinedTextField(colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White),
+            value = weight, onValueChange = { weight = it }, label = { Text("Вес (кг)") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
 
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = isSterilized, onCheckedChange = { isSterilized = it })
-            Text("Стерилизация")
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = isCastrated, onCheckedChange = { isCastrated = it })
-            Text("Кастрация")
+        Column {
+            Text(text = "Информация о кастрации/стерилизации: ", style = MaterialTheme.typography.bodyMedium)
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = (isCastrated),
+                    onClick = {
+                        isCastrated = true
+                        isSterilized = false
+                    }
+                )
+                Text(text = "Кастрирован(а)")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = (isSterilized),
+                    onClick = {
+                        isCastrated = false
+                        isSterilized = true
+                    }
+                )
+                Text(text = "Стерилизован(а)")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = (!isCastrated && !isSterilized),
+                    onClick = {
+                        isCastrated = false
+                        isSterilized = false
+                    }
+                )
+                Text(text = "-")
+            }
+
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = newVaccineName, onValueChange = { newVaccineName = it }, label = { Text("Название прививки") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White),
+            value = newVaccineName, onValueChange = { newVaccineName = it }, label = { Text("Название прививки") }, modifier = Modifier.fillMaxWidth())
 
         OutlinedTextField(
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
             value = newVaccineDate,
             onValueChange = { newVaccineDate = it },
             label = { Text("Дата прививки (ДД.ММ.ГГГГ)") },
@@ -185,10 +293,20 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(2.dp, Color.White, RoundedCornerShape(16.dp))
+                            .background(Color.White).padding(8.dp), // Отступ справа для кнопки
+                        verticalAlignment = Alignment.CenterVertically // Выравнивание по вертикали
                     ) {
-                        Text("${vaccine.name} - ${vaccine.date}")
+                        Column(
+                            modifier = Modifier.weight(1f) // Текст занимает все доступное пространство
+                        ) {
+                            Text(
+                                text = "${vaccine.name} - ${vaccine.date}",
+                                fontSize = 16.sp,
+                            )
+                        }
+
                         IconButton(onClick = { viewModel.removeVaccine(vaccine) }) {
                             Icon(Icons.Default.Delete, contentDescription = "Удалить", tint = Color.Red)
                         }
@@ -199,9 +317,18 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = newTreatmentName, onValueChange = { newTreatmentName = it }, label = { Text("Название обработки") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
+            value = newTreatmentName, onValueChange = { newTreatmentName = it }, label = { Text("Название обработки") }, modifier = Modifier.fillMaxWidth())
 
         OutlinedTextField(
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
             value = newTreatmentDate,
             onValueChange = { newTreatmentDate = it },
             label = { Text("Дата обработки (ДД.ММ.ГГГГ)") },
@@ -228,6 +355,7 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
             modifier = Modifier.heightIn(min = 0.dp, max = 1600.dp)
         ) {
             items(treatList.reversed()) { treatment ->
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -237,10 +365,21 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            //.padding(end = 24.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(2.dp, Color.White, RoundedCornerShape(16.dp))
+                            .background(Color.White).padding(8.dp), // Отступ справа для кнопки
+                        verticalAlignment = Alignment.CenterVertically // Выравнивание по вертикали
                     ) {
-                        Text("${treatment.name} - ${treatment.date}")
+                        Column(
+                            modifier = Modifier.weight(1f) // Текст занимает все доступное пространство
+                        ) {
+                            Text(
+                                text = "${treatment.name} - ${treatment.date}",
+                                fontSize = 16.sp,
+                            )
+                        }
+
                         IconButton(onClick = { viewModel.removeTreatment(treatment) }) {
                             Icon(Icons.Default.Delete, contentDescription = "Удалить", tint = Color.Red)
                         }
@@ -248,43 +387,63 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
                 }
             }
         }
-
-        Button(
-            onClick = {
-                if (name == "") {
-                    emptyName = true
-                }  else {
-
-                    val gen = if (gender == "Мальчик") Gender.MALE else Gender.FEMALE
-                    val dog = Dog(
-                        id = dogId ?: "0", // Новый id для добавления, если dogId == null
-                        name = name,
-                        breed = breed,
-                        birthDate = birthDate,
-                        gender = gen,
-                        weight = weight.toDouble(),
-                        castration = isCastrated,
-                        sterilization = isSterilized,
-                        vaccinations = vaccineList,
-                        treatments = treatList
-                    )
-
-                    if (dogId == null) {
-                        healthViewModel.addDog(dog)
-                    } else {
-                        healthViewModel.updateDog(dog, dogId) // Новый метод для обновления информации
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (dogId != null) {
+                IconButton(
+                    onClick = {
+                        healthViewModel.removeDog(dogId)
+                        navController.navigate("health") {
+                            popUpTo("edit_dog") { inclusive = true }
+                        }
                     }
-                    viewModel.clear()
+                ) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Удалить собаку",
+                        tint = Color.Red
+                    )
+                }
+            }
 
-                    navController.navigate("health") {
-                        popUpTo("edit_dog") { inclusive = true }
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = {
+                    if (name == "") {
+                        emptyName = true
+                    } else {
+                        val gen = if (gender == "Мальчик") Gender.MALE else Gender.FEMALE
+                        val dog = Dog(
+                            id = dogId ?: "0",
+                            name = name,
+                            breed = breed,
+                            birthDate = birthDate,
+                            gender = gen,
+                            weight = weight.toDouble(),
+                            castration = isCastrated,
+                            sterilization = isSterilized,
+                            vaccinations = vaccineList,
+                            treatments = treatList
+                        )
+
+                        if (dogId == null) {
+                            healthViewModel.addDog(dog, dogIdNew)
+                        } else {
+                            healthViewModel.updateDog(dog, dogId)
+                        }
+                        viewModel.clear()
+
+                        navController.navigate("health") {
+                            popUpTo("edit_dog") { inclusive = true }
+                        }
                     }
                 }
-
-            },
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text(text = if (dogId == null) "Добавить собаку" else "Обновить информацию")
+            ) {
+                Text(text = if (dogId == null) "Добавить собаку" else "Обновить информацию")
+            }
         }
         if (emptyName) {
             Text("Введите кличку собаки!", color = Color.Red)

@@ -23,7 +23,6 @@ class HealthViewModel @Inject constructor(
         loadDogs()
     }
 
-
     private fun loadDogs() {
         viewModelScope.launch {
             dogListInteractor.loadDogs().collect { dogList ->
@@ -32,9 +31,9 @@ class HealthViewModel @Inject constructor(
         }
     }
 
-    fun addDog(dog: Dog) {
+    fun addDog(dog: Dog, dogId: String) {
         viewModelScope.launch {
-            dogListInteractor.addDog(dog)
+            dogListInteractor.addDog(dog, dogId)
         }
     }
 

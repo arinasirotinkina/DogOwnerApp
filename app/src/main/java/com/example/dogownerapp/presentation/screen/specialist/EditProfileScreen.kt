@@ -2,8 +2,10 @@ package com.example.dogownerapp.presentation.screen.specialist
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +34,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,14 +44,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.dogownerapp.domain.model.Specialist
 import com.example.dogownerapp.domain.model.User
 import com.example.dogownerapp.presentation.MapsActivity
+import com.example.dogownerapp.presentation.screen.auth.customColors
+import com.example.dogownerapp.presentation.screen.home.isImageExists
 import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
 import com.google.firebase.firestore.GeoPoint
 
@@ -67,6 +75,25 @@ fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavCont
     var experience by remember { mutableStateOf(spec.experience) }
     val scrollState = rememberScrollState()
     var location by remember { mutableStateOf(spec.location) }
+    var prices by remember { mutableStateOf(spec.prices) }
+    var randomParam = System.currentTimeMillis()
+    var avatarUrl by remember { mutableStateOf("http://arinas8t.beget.tech/photo/specs/${spec.id}?$randomParam")}
+    var imageExists by remember { mutableStateOf<Boolean?>(null) }
+    val context = LocalContext.current
+
+    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            imageExists = false
+            profileViewModel.uploadPhoto(uri, context) {
+                randomParam = System.currentTimeMillis()
+                avatarUrl ="http://arinas8t.beget.tech/photo/specs/${spec.id}?$randomParam"
+                imageExists = true
+            }
+        }
+    }
+    LaunchedEffect(avatarUrl) {
+        imageExists = isImageExists(avatarUrl)
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -91,10 +118,23 @@ fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavCont
                 .size(150.dp)
                 .clip(CircleShape)
                 .background(Color.LightGray)
-                .clickable {  },
+                .clickable { galleryLauncher.launch("image/*") },
             contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = Icons.Default.AccountBox, contentDescription = "Выбрать фото", tint = Color.White)
+            if (imageExists == true) {
+                Image(
+                    painter = rememberAsyncImagePainter(avatarUrl),
+                    contentDescription = "Avatar",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(150.dp).clip(CircleShape)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.AccountBox,
+                    contentDescription = "Выбрать фото",
+                    tint = Color.White
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -171,7 +211,7 @@ fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavCont
         }
 
         Column {
-            Text(text = "Специализация: ", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Специализация: ", style = MaterialTheme.typography.bodyMedium, fontSize = 12.sp)
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButton(
@@ -198,7 +238,6 @@ fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavCont
 
         }
 
-        //Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(value = about,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -216,19 +255,29 @@ fun EditProfileScreen(profileViewModel: ProfileViewModel, navController: NavCont
             modifier = Modifier.fillMaxWidth().wrapContentHeight())
 
 
+        OutlinedTextField(value = prices,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White),
+            onValueChange = { prices = it }, label = { Text("Услуги и цены") },
+            modifier = Modifier.fillMaxWidth().wrapContentHeight())
+
+
+
         OutlinedTextField(value = conditions,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
                 disabledContainerColor = Color.White),
-            onValueChange = { conditions = it }, label = { Text("Условия") },
+            onValueChange = { conditions = it }, label = { Text("Условия приема (дома, в салоне, в клинике)") },
             modifier = Modifier.fillMaxWidth().wrapContentHeight())
 
 
         Button(
             onClick = {
                 val spec = Specialist(id, name, surname, email, phoneNumber,
-                    specialization, address, about, experience, conditions, location)
+                    specialization, address, about, experience, conditions, prices, location)
                 profileViewModel.updateSpec(spec)
 
                 navController.navigate("profile") {
