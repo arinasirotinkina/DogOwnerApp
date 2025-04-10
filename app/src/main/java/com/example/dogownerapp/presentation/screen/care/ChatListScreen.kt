@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.dogownerapp.domain.model.Chat
 import com.example.dogownerapp.presentation.screen.auth.Space
-import com.example.dogownerapp.presentation.viewmodel.ChatListViewModel
+import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 
 @Composable
-fun ChatListScreen(chatListViewModel: ChatListViewModel, navController: NavController, owner: Boolean) {
-    chatListViewModel.loadChats(owner)
-    val chats by chatListViewModel.chats.collectAsState()
+fun ChatListScreen(chatViewModel: ChatViewModel, navController: NavController, owner: Boolean) {
+    chatViewModel.loadChats(owner)
+    val chats by chatViewModel.chats.collectAsState()
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {

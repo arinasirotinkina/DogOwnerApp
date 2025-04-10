@@ -1,5 +1,8 @@
 package com.example.dogownerapp.presentation.screen.health
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -60,6 +63,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.dogownerapp.domain.model.Dog
@@ -124,6 +129,7 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
         imageExists = isImageExists(avatarUrl)
     }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -136,6 +142,7 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
                 .clip(CircleShape)
                 .background(Color.LightGray)
                 .clickable {
+
                     galleryLauncher.launch("image/*")
                 },
             contentAlignment = Alignment.Center
@@ -295,11 +302,11 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(16.dp))
                             .border(2.dp, Color.White, RoundedCornerShape(16.dp))
-                            .background(Color.White).padding(8.dp), // Отступ справа для кнопки
-                        verticalAlignment = Alignment.CenterVertically // Выравнивание по вертикали
+                            .background(Color.White).padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
-                            modifier = Modifier.weight(1f) // Текст занимает все доступное пространство
+                            modifier = Modifier.weight(1f)
                         ) {
                             Text(
                                 text = "${vaccine.name} - ${vaccine.date}",
@@ -368,11 +375,11 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
                             //.padding(end = 24.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .border(2.dp, Color.White, RoundedCornerShape(16.dp))
-                            .background(Color.White).padding(8.dp), // Отступ справа для кнопки
-                        verticalAlignment = Alignment.CenterVertically // Выравнивание по вертикали
+                            .background(Color.White).padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
-                            modifier = Modifier.weight(1f) // Текст занимает все доступное пространство
+                            modifier = Modifier.weight(1f)
                         ) {
                             Text(
                                 text = "${treatment.name} - ${treatment.date}",
@@ -454,3 +461,4 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
         navController.popBackStack()
     }
 }
+

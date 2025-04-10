@@ -50,8 +50,7 @@ fun RegistrationScreen( viewModel: AuthViewModel, navController: NavController) 
     val activity = LocalActivity.current
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
-    var passwordGo by remember { mutableStateOf(true) }
-    var context = LocalContext.current
+    val context = LocalContext.current
 
     MaterialTheme(colorScheme = customColors) {
         Column(

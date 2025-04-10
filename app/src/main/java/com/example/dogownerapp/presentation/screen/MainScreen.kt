@@ -1,5 +1,11 @@
-import androidx.activity.viewModels
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -9,9 +15,15 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,7 +35,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.dogownerapp.R
-import com.example.dogownerapp.domain.model.Recommendation
 import com.example.dogownerapp.presentation.auth.AuthViewModel
 import com.example.dogownerapp.presentation.viewmodel.EditDogViewModel
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
@@ -41,35 +52,56 @@ import com.example.dogownerapp.presentation.screen.care.Recommends
 import com.example.dogownerapp.presentation.screen.care.SearchSpec
 import com.example.dogownerapp.presentation.screen.specialist.SpecialistVersion
 import com.example.dogownerapp.presentation.ui.CustomTheme
-import com.example.dogownerapp.presentation.viewmodel.ChatListViewModel
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 import com.example.dogownerapp.presentation.viewmodel.PlansViewModel
 import com.example.dogownerapp.presentation.viewmodel.RecommendsViewModel
 import com.example.dogownerapp.presentation.viewmodel.SpecsViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.delay
 
 @Composable
 fun SubMain(healthViewModel: HealthViewModel, editDogViewModel: EditDogViewModel,
             userViewModel: UserViewModel, plansViewModel: PlansViewModel,
             chatViewModel: ChatViewModel, recsViewModel: RecommendsViewModel,
             profileViewModel: ProfileViewModel, authViewModel: AuthViewModel,
-            specsViewModel: SpecsViewModel, chatListViewModel: ChatListViewModel
+            specsViewModel: SpecsViewModel
 ) {
-    val user = userViewModel.user.collectAsState().value
+
+    var loading by remember { mutableStateOf(false) }
+    val user by userViewModel.user.collectAsState()
+    LaunchedEffect(user) {
+        loading = true
+    }
+
+    if (loading) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Image(
+                painter = painterResource(R.drawable.start_image),
+                contentDescription = "Start Image",
+                modifier = Modifier
+                    .size(200.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+        }
+
+    }
     if (user.role == "owner") {
         Main(healthViewModel, editDogViewModel,
             userViewModel, plansViewModel,
             chatViewModel, recsViewModel,
-            specsViewModel, chatListViewModel, authViewModel)
+            specsViewModel, authViewModel)
     }
-    else {
-        SpecialistVersion(authViewModel, profileViewModel, chatListViewModel, chatViewModel)
+    else if (user.role == "specialist") {
+        SpecialistVersion(authViewModel, profileViewModel, chatViewModel)
     }
 }
+
+
 @Composable
 fun Main(healthViewModel: HealthViewModel,
          editDogViewModel: EditDogViewModel,
@@ -78,7 +110,6 @@ fun Main(healthViewModel: HealthViewModel,
          chatViewModel: ChatViewModel,
          recsViewModel: RecommendsViewModel,
          specsViewModel: SpecsViewModel,
-         chatListViewModel: ChatListViewModel,
          authViewModel: AuthViewModel
 ) {
     CustomTheme {
@@ -103,7 +134,7 @@ fun Main(healthViewModel: HealthViewModel,
                     composable(NavRoutes.Planning.route) { Planning(plansViewModel)  }
                     composable(NavRoutes.Care.route) { Care(navController) }
 
-                    composable(NavRoutes.ChatList.route) { ChatListScreen(chatListViewModel,
+                    composable(NavRoutes.ChatList.route) { ChatListScreen(chatViewModel,
                         navController, true) }
 
                     composable(NavRoutes.Home.route) { Home(userViewModel, authViewModel, navController) }
@@ -134,7 +165,7 @@ fun Main(healthViewModel: HealthViewModel,
                         arguments = listOf(navArgument("chatId") {
                             nullable = false
                         }, navArgument("name") {
-                            nullable = false // Делаем имя обязательным
+                            nullable = false
                         })
                     ) { backStackEntry ->
                         val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
@@ -211,8 +242,8 @@ fun BottomNavigationBar(navController: NavController) {
                             },
 
                     colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
-                        selectedTextColor = MaterialTheme.colorScheme.onSecondary, // Цвет текста в активном состоянии
-                        indicatorColor = customColors.onSurface // Цвет фона активного элемента
+                        selectedTextColor = MaterialTheme.colorScheme.onSecondary,
+                        indicatorColor = customColors.onSurface
                     )
                 )
             }
@@ -255,7 +286,7 @@ data class BarItem(
 
 
 sealed class NavRoutes(val route: String) {
-    object Health : NavRoutes("health")
+    data object Health : NavRoutes("health")
     object Planning : NavRoutes("plans")
     object Care : NavRoutes("care")
     object Home : NavRoutes("home")

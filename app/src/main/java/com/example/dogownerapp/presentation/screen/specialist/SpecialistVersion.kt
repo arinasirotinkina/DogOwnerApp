@@ -1,6 +1,5 @@
 package com.example.dogownerapp.presentation.screen.specialist
 
-import NavRoutes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,17 +25,14 @@ import androidx.navigation.navArgument
 import com.example.dogownerapp.R
 import com.example.dogownerapp.presentation.auth.AuthViewModel
 import com.example.dogownerapp.presentation.screen.auth.customColors
-import com.example.dogownerapp.presentation.screen.care.Care
 import com.example.dogownerapp.presentation.screen.care.ChatListScreen
 import com.example.dogownerapp.presentation.screen.care.ChatScreen
 import com.example.dogownerapp.presentation.ui.CustomTheme
-import com.example.dogownerapp.presentation.viewmodel.ChatListViewModel
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 import com.example.dogownerapp.presentation.viewmodel.specialists.ProfileViewModel
 
 @Composable
-fun SpecialistVersion(authViewModel: AuthViewModel, profileViewModel: ProfileViewModel,
-                      chatListViewModel: ChatListViewModel, chatViewModel: ChatViewModel) {
+fun SpecialistVersion(authViewModel: AuthViewModel, profileViewModel: ProfileViewModel, chatViewModel: ChatViewModel) {
     CustomTheme {
         val navController = rememberNavController()
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -57,7 +53,7 @@ fun SpecialistVersion(authViewModel: AuthViewModel, profileViewModel: ProfileVie
                 ) {
                     composable("profile") { Profile(authViewModel, profileViewModel, navController) }
                     composable("edit_profile") { EditProfileScreen(profileViewModel, navController) }
-                    composable("chats") { ChatListScreen(chatListViewModel,
+                    composable("chats") { ChatListScreen(chatViewModel,
                         navController, false) }
                     composable(
                         route = "chat/{chatId}/name={name}",
@@ -119,8 +115,8 @@ fun BottomNavigationBarSpec(navController: NavController) {
                     },
 
                     colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
-                        selectedTextColor = MaterialTheme.colorScheme.onSecondary, // Цвет текста в активном состоянии
-                        indicatorColor = customColors.onSurface // Цвет фона активного элемента
+                        selectedTextColor = MaterialTheme.colorScheme.onSecondary,
+                        indicatorColor = customColors.onSurface
                     )
                 )
             }

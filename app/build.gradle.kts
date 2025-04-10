@@ -30,7 +30,7 @@ android {
         }
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14" // Убедитесь, что эта версия актуальна
+        kotlinCompilerExtensionVersion = "1.5.14"
 
     }
     compileOptions {
@@ -66,7 +66,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview.android)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.play.services.maps)
-    // implementation(libs.androidx.benchmark.baseline.profile.gradle.plugin)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -82,32 +81,4 @@ dependencies {
     implementation("com.yandex.android:maps.mobile:4.10.1-lite")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    //implementation ("com.yandex.android:maps.mobile:4.0.0")
-    //implementation("com.google.dagger:hilt-android:2.48")
-    //kapt("com.google.dagger:hilt-compiler:2.48")
-    //implementation("com.google.firebase:firebase-core:16.0.1")
-    //implementation("com.google.firebase:firebase-messaging:17.4.0")
-    // Import the Firebase BoM
-    //implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
-    //implementation("com.google.firebase:firebase-bom:32.7.0")
-    //implementation("com.google.firebase:firebase-messaging")
-
-    // Основные зависимости для Jetpack Compose
-    //implementation("androidx.compose.main:main:1.5.14")  // Основной UI Compose
-    //implementation("androidx.compose.material:material:1.5.14")  // Material Components
-    //implementation("androidx.compose.main:main-tooling-preview:1.5.14")  // Для предварительного просмотра UI
-    //debugImplementation("androidx.compose.main:main-tooling:1.5.14") // Для дебага
-
-    // Навигация Compose (если используется)
-    //implementation("androidx.navigation:navigation-compose:2.5.0")  // Для навигации в Compose
-
-    // Зависимости для ViewModel и LiveData (если используется)
-    //implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
-    // TODO: Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
-    //implementation("com.google.firebase:firebase-analytics")
-
-
-    // Add the dependencies for any other desired Firebase products
-    // https://firebase.google.com/docs/android/setup#available-libraries
 }

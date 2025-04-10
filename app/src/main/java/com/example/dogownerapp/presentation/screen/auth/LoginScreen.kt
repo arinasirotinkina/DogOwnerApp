@@ -42,7 +42,7 @@ fun LoginScreen( viewModel: AuthViewModel, navController: NavController) {
     var email by remember { mutableStateOf("") }
     val activity = LocalActivity.current
     var password by remember { mutableStateOf("") }
-    var context = LocalContext.current
+    val context = LocalContext.current
     MaterialTheme(colorScheme = customColors) {
         Column(
             modifier = Modifier
