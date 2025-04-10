@@ -1,6 +1,5 @@
 package com.example.dogownerapp.presentation.viewmodel
 
-import SaveImageService
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -10,6 +9,7 @@ import com.example.dogownerapp.domain.interactor.DogListInteractor
 import com.example.dogownerapp.domain.interactor.UserInteractor
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.User
+import com.example.dogownerapp.domain.repository.SaveImageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val userInteractor: UserInteractor
+    private val userInteractor: UserInteractor,
+    private val saveImageService: SaveImageService
 ) : ViewModel() {
     private val _user = MutableStateFlow<User>(User())
     var user: StateFlow<User> = _user.asStateFlow()
@@ -45,10 +46,8 @@ class UserViewModel @Inject constructor(
     fun uploadPhoto(uri: Uri, context: Context, onComplete: () -> Unit) {
         viewModelScope.launch {
             try {
-
-                val imS = SaveImageService()
-                imS.uploadFileToFTP(uri, context, "users", _user.value.id) // Загружаем фото
-                onComplete() // Вызываем коллбэк после успешной загрузки
+                saveImageService.uploadFileToFTP(uri, context, "users", _user.value.id)
+                onComplete()
             } catch (e: Exception) {
                 Log.e("UploadPhoto", "Ошибка загрузки фото", e)
             }
@@ -59,7 +58,4 @@ class UserViewModel @Inject constructor(
             userInteractor.updateFavs(favourites)
         }
     }
-
-
-
 }

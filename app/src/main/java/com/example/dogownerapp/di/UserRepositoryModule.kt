@@ -1,9 +1,7 @@
 package com.example.dogownerapp.di
 
-import com.example.dogownerapp.data.repository.DogRepositoryImpl
 import com.example.dogownerapp.data.repository.TaskRepositoryImpl
 import com.example.dogownerapp.data.repository.UserRepositoryImpl
-import com.example.dogownerapp.domain.repository.DogRepository
 import com.example.dogownerapp.domain.repository.TaskRepository
 import com.example.dogownerapp.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -12,7 +10,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

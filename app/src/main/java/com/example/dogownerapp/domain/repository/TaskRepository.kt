@@ -1,9 +1,7 @@
 package com.example.dogownerapp.domain.repository
 
-import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.Task
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 interface TaskRepository {
     fun getTasks(): Flow<List<Task>>

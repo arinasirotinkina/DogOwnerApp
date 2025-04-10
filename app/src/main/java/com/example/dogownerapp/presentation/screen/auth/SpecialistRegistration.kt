@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,9 +51,7 @@ fun SpecialistRegistration(viewModel: AuthViewModel, navController: NavControlle
     var surname by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
-    var selectedOption by remember { mutableStateOf("") }
-    var passwordGo by remember { mutableStateOf(true) }
-
+    val context = LocalContext.current
     MaterialTheme(colorScheme = customColors) {
         Column(
             modifier = Modifier
@@ -165,10 +164,16 @@ fun SpecialistRegistration(viewModel: AuthViewModel, navController: NavControlle
             Button(
 
                 onClick = {
-                    if (password == repeatPassword) {
-                        viewModel.registerSpecialist(name, surname, email, password)
+                    if (name == "") {
+                        showToast(context, "Имя не должно быть пустым!")
+                    } else if (surname == "") {
+                        showToast(context, "Фамилия не должна быть пустой!")
+                    } else if (!isValidPassword(password)) {
+                        showToast(context, "Небезопасный пароль!")
+                    } else if (password != repeatPassword) {
+                        showToast(context, "Пароли не совпадают!")
                     } else {
-                        passwordGo = false
+                        viewModel.registerSpecialist(name, surname, email, password)
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -176,16 +181,10 @@ fun SpecialistRegistration(viewModel: AuthViewModel, navController: NavControlle
                 Text("Зарегистрироваться")
             }
 
-            Spacer(Modifier.size(12.dp))
-
-
-            if (!passwordGo) {
-                ErrorMassage("Пароли не совпадают")
-            }
+            Space()
 
             if (state is AuthResult.Error) {
-                ErrorMassage((state as AuthResult.Error).message)
-
+                showToast(context, (state as AuthResult.Error).message)
             }
 
             Text(

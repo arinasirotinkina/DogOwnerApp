@@ -1,6 +1,5 @@
 package com.example.dogownerapp.domain.interactor
 
-import android.util.Log
 import com.example.dogownerapp.domain.model.AuthResult
 import com.example.dogownerapp.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow

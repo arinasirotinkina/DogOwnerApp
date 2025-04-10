@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import android.location.Location
 
-
 @HiltViewModel
 class SpecsViewModel @Inject constructor(
     private val searchSpecInteractor: SearchSpecInteractor
@@ -33,7 +32,6 @@ class SpecsViewModel @Inject constructor(
         loadSpecs()
     }
 
-
     private fun loadSpecs() {
         viewModelScope.launch {
             searchSpecInteractor.loadSpecs().collect { specList ->
@@ -42,7 +40,6 @@ class SpecsViewModel @Inject constructor(
             }
         }
     }
-
 
     fun getSpecById(specId: String): Specialist? {
         return _specs.value.find { it.id == specId }
@@ -74,7 +71,5 @@ class SpecsViewModel @Inject constructor(
         loc2.longitude = specialistLocation.longitude
         return (loc1.distanceTo(loc2))
     }
-
-
 }
 

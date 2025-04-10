@@ -47,14 +47,18 @@ fun SearchSpec(viewModel: SpecsViewModel,
     val scrollState = rememberScrollState()
     var closerState by remember { mutableStateOf(false) }
     val user by userViewModel.user.collectAsState()
-    if (specialization == "") {
+    var title = specialization
+    if (specialization == "Избранное") {
         viewModel.showFavourites(user.location, user.favourites)
     } else {
+        title += "ы"
         viewModel.filterBySpecialization(user.location, specialization)
     }
     val specs by viewModel.specsToShow.collectAsState()
     Column (Modifier.verticalScroll(scrollState)) {
 
+        Text(title, fontSize = 24.sp, fontWeight = FontWeight.Bold,
+            color = customColors.primary, modifier = Modifier.padding(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = closerState, onCheckedChange = { closerState = it })
             Text("Рядом со мной")

@@ -1,6 +1,5 @@
 package com.example.dogownerapp.presentation.screen.health
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,7 +51,6 @@ import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.screen.home.isImageExists
 import com.example.dogownerapp.presentation.viewmodel.HealthViewModel
 import org.checkerframework.checker.units.qual.Current
-
 
 
 @Composable

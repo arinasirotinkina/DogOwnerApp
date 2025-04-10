@@ -1,11 +1,9 @@
 package com.example.dogownerapp.data.repository
 
-import SaveImageService
-import android.content.Context
-import android.net.Uri
 import android.util.Log
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.repository.DogRepository
+import com.example.dogownerapp.domain.repository.SaveImageService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
@@ -16,11 +14,11 @@ import javax.inject.Inject
 
 class DogRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth // Получаем FirebaseAuth для получения userId
+    private val auth: FirebaseAuth,
+    private val imageService: SaveImageService
 ) : DogRepository {
 
     private val userId: String = auth.currentUser?.uid ?: throw IllegalStateException("User not authenticated")
-
     override fun getDogs(): Flow<List<Dog>> = callbackFlow {
         val dogsCollection = firestore.collection("users").document(userId).collection("dogs")
 
@@ -37,8 +35,8 @@ class DogRepositoryImpl @Inject constructor(
     }
 
     override fun getDogById(dogId: String): Flow<Dog> = callbackFlow {
-        val dogDocument = firestore.collection("users").document(userId).collection("dogs").document(dogId)
-
+        val dogDocument = firestore.collection("users").document(userId)
+            .collection("dogs").document(dogId)
         val listener = dogDocument.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 close(e)
@@ -54,30 +52,31 @@ class DogRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addDog(dog: Dog, dogId: String) {
-        val dogsCollection = firestore.collection("users").document(userId).collection("dogs")
+        val dogsCollection = firestore.collection("users").document(userId)
+            .collection("dogs")
         var documentId: String? = null
         dogsCollection.add(dog)
             .addOnSuccessListener { documentReference ->
-                documentId = documentReference.id // Получаем назначенный ID
+                documentId = documentReference.id
                 }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Ошибка добавления", e)
             }.await()
         if (documentId != null) {
-            val imS = SaveImageService()
-            imS.renameFileOnFTP("dogs", dogId, documentId!!) // Загружаем фото
-
+            imageService.renameFileOnFTP("dogs", dogId, documentId!!)
         }
 
     }
 
     override suspend fun removeDog(dogId: String) {
-        val dogDocument = firestore.collection("users").document(userId).collection("dogs").document(dogId)
+        val dogDocument = firestore.collection("users").document(userId)
+            .collection("dogs").document(dogId)
         dogDocument.delete().await()
     }
 
     override suspend fun updateDog(dog: Dog, dogId: String) {
-        val dogDocument = firestore.collection("users").document(userId).collection("dogs").document(dogId)
+        val dogDocument = firestore.collection("users").document(userId)
+            .collection("dogs").document(dogId)
         dogDocument.update(
             "name", dog.name,
             "breed", dog.breed,

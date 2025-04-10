@@ -1,17 +1,13 @@
 package com.example.dogownerapp.presentation.viewmodel.specialists
 
-import SaveImageService
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dogownerapp.domain.interactor.DogListInteractor
 import com.example.dogownerapp.domain.interactor.SpecialistInteractor
-import com.example.dogownerapp.domain.interactor.UserInteractor
-import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.Specialist
-import com.example.dogownerapp.domain.model.User
+import com.example.dogownerapp.domain.repository.SaveImageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val specialistInteractor: SpecialistInteractor
+    private val specialistInteractor: SpecialistInteractor,
+    private val imageService: SaveImageService
 ) : ViewModel() {
     private val _spec = MutableStateFlow<Specialist>(Specialist())
     var spec: StateFlow<Specialist> = _spec.asStateFlow()
@@ -46,14 +43,11 @@ class ProfileViewModel @Inject constructor(
     fun uploadPhoto(uri: Uri, context: Context, onComplete: () -> Unit) {
         viewModelScope.launch {
             try {
-
-                val imS = SaveImageService()
-                imS.uploadFileToFTP(uri, context, "specs", _spec.value.id) // Загружаем фото
+                imageService.uploadFileToFTP(uri, context, "specs", _spec.value.id)
                 onComplete()
             } catch (e: Exception) {
                 Log.e("UploadPhoto", "Ошибка загрузки фото", e)
             }
         }
     }
-
 }

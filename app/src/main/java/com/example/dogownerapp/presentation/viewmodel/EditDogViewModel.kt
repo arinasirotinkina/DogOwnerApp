@@ -1,15 +1,17 @@
 package com.example.dogownerapp.presentation.viewmodel
 
-import SaveImageService
+
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dogownerapp.data.datasource.SaveImageServiceImpl
 import com.example.dogownerapp.domain.interactor.DogListInteractor
 import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.Treatment
 import com.example.dogownerapp.domain.model.Vaccination
+import com.example.dogownerapp.domain.repository.SaveImageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditDogViewModel @Inject constructor(
-    private val dogListInteractor: DogListInteractor
+    private val dogListInteractor: DogListInteractor,
+    private val imageService: SaveImageService
 ): ViewModel() {
     private val _dog = MutableStateFlow<Dog>(Dog())
     var dog: StateFlow<Dog> = _dog.asStateFlow()
@@ -62,8 +65,7 @@ class EditDogViewModel @Inject constructor(
     fun uploadPhoto(uri: Uri, context: Context, dogId: String, onComplete: () -> Unit) {
         viewModelScope.launch {
             try {
-                val imS = SaveImageService()
-                imS.uploadFileToFTP(uri, context, "dogs", dogId)
+                imageService.uploadFileToFTP(uri, context, "dogs", dogId)
                 onComplete()
             } catch (e: Exception) {
                 Log.e("UploadPhoto", "Ошибка загрузки фото", e)

@@ -40,7 +40,6 @@ class PlansViewModel @Inject constructor(
             tasksInteractor.loadTasks().collect { taskList ->
                 _tasks.value = taskList
                 _daysWithTasks.value = taskList.map { it.getLocalDate() }
-                //_tasksForDay.value = taskList.filter { it.getLocalDate().isEqual(LocalDate.now()) }
             }
         }
     }

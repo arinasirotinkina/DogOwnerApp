@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import com.example.dogownerapp.R
 
-// 🎨 Определяем цветовую схему
 private val CustomLightColors = lightColorScheme(
     primary = Color(0xFFA74B0F),
     secondary = Color(0xFFBE4D20),
@@ -19,7 +18,6 @@ private val CustomLightColors = lightColorScheme(
     onBackground = Color.Black,
 )
 
-// 🎨 Опционально: можно добавить тёмную тему
 private val CustomDarkColors = darkColorScheme(
     primary = Color(0xFFBE4D20),
     secondary = Color(0xFFA74B0F),
@@ -31,16 +29,16 @@ private val CustomDarkColors = darkColorScheme(
     onSurface = Color.White
 )
 
-// 🌙 Функция выбора темы (светлая/тёмная)
+
 @Composable
 fun CustomTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(), // Можно подключить isSystemInDarkTheme()
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) CustomDarkColors else CustomLightColors
 
     MaterialTheme(
-        colorScheme = colors, // Опционально: можно задать шрифты
+        colorScheme = colors,
         content = content
     )
 }

@@ -4,7 +4,6 @@ import com.example.dogownerapp.presentation.screen.auth.RegistrationScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable

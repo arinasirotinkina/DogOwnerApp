@@ -1,9 +1,5 @@
 package com.example.dogownerapp.presentation.screen.health
 
-import android.Manifest
-import android.app.Activity
-import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -113,12 +108,8 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
             imageExists = false
-            if (dogId == null) {
-                dogIdNew = System.currentTimeMillis().toString()
-            } else {
-                dogIdNew = dogId
-            }
-            viewModel.uploadPhoto(uri, context,  dogIdNew) {
+            dogIdNew = dogId ?: System.currentTimeMillis().toString()
+            viewModel.uploadPhoto(uri, context, dogIdNew) {
                 randomParam = System.currentTimeMillis()
                 avatarUrl = "http://arinas8t.beget.tech/photo/dogs/${dogIdNew}?$randomParam"
                 imageExists = true
@@ -128,7 +119,6 @@ fun EditDog(viewModel: EditDogViewModel, healthViewModel: HealthViewModel, navCo
     LaunchedEffect(avatarUrl) {
         imageExists = isImageExists(avatarUrl)
     }
-
 
     Column(
         modifier = Modifier

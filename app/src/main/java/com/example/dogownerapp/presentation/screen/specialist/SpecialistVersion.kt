@@ -65,7 +65,7 @@ fun SpecialistVersion(authViewModel: AuthViewModel, profileViewModel: ProfileVie
                     ) { backStackEntry ->
                         val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
                         val name = backStackEntry.arguments?.getString("name") ?: ""
-                        ChatScreen(chatViewModel, navController, chatId, name, false)
+                        ChatScreen(chatViewModel, chatId, name, false)
                     }
                 }
 

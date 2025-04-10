@@ -2,7 +2,6 @@ package com.example.dogownerapp.domain.repository
 
 import com.example.dogownerapp.domain.model.Chat
 import com.example.dogownerapp.domain.model.Message
-import com.example.dogownerapp.domain.model.Specialist
 import kotlinx.coroutines.flow.Flow
 
 

@@ -18,7 +18,7 @@ import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.viewmodel.RecommendsViewModel
 
 @Composable
-fun ReadRec(viewModel: RecommendsViewModel, navController: NavController, recId: String) {
+fun ReadRec(viewModel: RecommendsViewModel, recId: String) {
     val scrollState = rememberScrollState()
     val rec = viewModel.getRecById(recId)
     val tags = buildText(rec!!)
@@ -54,6 +54,4 @@ fun ReadRec(viewModel: RecommendsViewModel, navController: NavController, recId:
             fontSize = 16.sp
         )
     }
-
-
 }

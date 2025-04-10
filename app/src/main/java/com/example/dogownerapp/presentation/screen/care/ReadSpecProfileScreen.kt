@@ -45,7 +45,8 @@ import com.example.dogownerapp.presentation.viewmodel.SpecsViewModel
 import com.example.dogownerapp.presentation.viewmodel.UserViewModel
 
 @Composable
-fun ReadSpecProfile(viewModel: SpecsViewModel, navController: NavController, specId: String, userViewModel: UserViewModel) {
+fun ReadSpecProfile(viewModel: SpecsViewModel, navController: NavController,
+                    specId: String, userViewModel: UserViewModel) {
     val scrollState = rememberScrollState()
     val user by userViewModel.user.collectAsState()
     var favourites by remember { mutableStateOf(user.favourites)}
@@ -104,11 +105,11 @@ fun ReadSpecProfile(viewModel: SpecsViewModel, navController: NavController, spe
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth().padding(8.dp), // Отступ справа для кнопки
+                    .fillMaxWidth().padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    modifier = Modifier.weight(1f) // Текст занимает все доступное пространство
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         text = "Адрес: " + spec.address,
@@ -202,13 +203,14 @@ fun ReadSpecProfile(viewModel: SpecsViewModel, navController: NavController, spe
             if (specId !in favourites) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth().align(Alignment.CenterHorizontally), // Отступ справа для кнопки
+                        .fillMaxWidth().align(Alignment.CenterHorizontally),
                     verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = {
                         favourites += specId
                         userViewModel.updateFavs(favourites)
                     }) {
-                        Icon(Icons.Outlined.FavoriteBorder, contentDescription = "Нет в избранном", tint = Color.Red)
+                        Icon(Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Нет в избранном", tint = Color.Red)
                     }
                     Text(
                         text = "  Добавить в избранное",
@@ -226,7 +228,8 @@ fun ReadSpecProfile(viewModel: SpecsViewModel, navController: NavController, spe
                         favourites -= specId
                         userViewModel.updateFavs(favourites)
                     }) {
-                        Icon(Icons.Outlined.Favorite, contentDescription = "В избранном", tint = Color.Red)
+                        Icon(Icons.Outlined.Favorite,
+                            contentDescription = "В избранном", tint = Color.Red)
                     }
                     Column(
                         modifier = Modifier.weight(1f)

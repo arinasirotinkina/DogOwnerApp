@@ -146,7 +146,7 @@ fun Main(healthViewModel: HealthViewModel,
                     composable(NavRoutes.Groomers.route) { SearchSpec(specsViewModel, "Грумер",
                         navController, userViewModel)}
 
-                    composable(NavRoutes.Favourites.route) { SearchSpec(specsViewModel, "",
+                    composable(NavRoutes.Favourites.route) { SearchSpec(specsViewModel, "Избранное",
                         navController, userViewModel)}
 
 
@@ -170,7 +170,7 @@ fun Main(healthViewModel: HealthViewModel,
                     ) { backStackEntry ->
                         val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
                         val name = backStackEntry.arguments?.getString("name") ?: ""
-                        ChatScreen(chatViewModel, navController, chatId, name, true)
+                        ChatScreen(chatViewModel, chatId, name, true)
                     }
 
                     composable(
@@ -180,7 +180,7 @@ fun Main(healthViewModel: HealthViewModel,
                         })
                     ) { backStackEntry ->
                         val recId = backStackEntry.arguments?.getString("recId")
-                        ReadRec(recsViewModel, navController, recId!!)
+                        ReadRec(recsViewModel, recId!!)
                     }
                     composable(
                         route = "read_spec/{specId}?",
@@ -191,7 +191,8 @@ fun Main(healthViewModel: HealthViewModel,
                         val specId = backStackEntry.arguments?.getString("specId")
                         ReadSpecProfile(specsViewModel, navController, specId!!, userViewModel)
                     }
-                    composable(NavRoutes.EditDog.route) { EditDog(editDogViewModel, healthViewModel, navController, null) }
+                    composable(NavRoutes.EditDog.route) { EditDog(editDogViewModel, healthViewModel,
+                        navController, null) }
                     composable(NavRoutes.EditProfile.route) { EditProfile(userViewModel, navController) }
 
                 }
@@ -287,21 +288,15 @@ data class BarItem(
 
 sealed class NavRoutes(val route: String) {
     data object Health : NavRoutes("health")
-    object Planning : NavRoutes("plans")
-    object Care : NavRoutes("care")
-    object Home : NavRoutes("home")
-    object EditDog : NavRoutes("edit_dog")
-    object UpdateDog : NavRoutes("update_dog")
-    object EditProfile : NavRoutes("edit_profile")
-    object Veterinary : NavRoutes("veterinary")
-    object ChatList : NavRoutes("chat_list")
-    object Chat : NavRoutes("chat")
-    object Recs : NavRoutes("recs")
-    object Specs: NavRoutes("search_spec")
-    object Vets: NavRoutes("vets")
-    object Groomers: NavRoutes("groomers")
-    object Dogsitters: NavRoutes("dogsitters")
-    object Favourites: NavRoutes("favourites")
-
-
+    data object Planning : NavRoutes("plans")
+    data object Care : NavRoutes("care")
+    data object Home : NavRoutes("home")
+    data object EditDog : NavRoutes("edit_dog")
+    data object EditProfile : NavRoutes("edit_profile")
+    data object ChatList : NavRoutes("chat_list")
+    data object Recs : NavRoutes("recs")
+    data object Vets: NavRoutes("vets")
+    data object Groomers: NavRoutes("groomers")
+    data object Dogsitters: NavRoutes("dogsitters")
+    data object Favourites: NavRoutes("favourites")
 }

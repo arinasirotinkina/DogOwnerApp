@@ -7,10 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-class FirebaseFirestoreModule {
-}
 @Module
-@InstallIn(SingletonComponent::class) // Доступен во всём приложении
+@InstallIn(SingletonComponent::class)
 object FirebaFirebaseFirestoreModuleseModule {
 
     @Provides

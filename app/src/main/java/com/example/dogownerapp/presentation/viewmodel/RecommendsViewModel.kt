@@ -1,6 +1,5 @@
 package com.example.dogownerapp.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dogownerapp.domain.interactor.RecommendationInteractor
@@ -11,8 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-
 
 @HiltViewModel
 class RecommendsViewModel @Inject constructor(
@@ -29,7 +26,6 @@ class RecommendsViewModel @Inject constructor(
     init {
         loadRecs()
     }
-
 
     private fun loadRecs() {
         viewModelScope.launch {
@@ -49,7 +45,6 @@ class RecommendsViewModel @Inject constructor(
                 || check(breeds, it.breeds) || check(care, it.care)
                 || check(nutrition, it.nutrition) || check(education, it.education))
         }
-        Log.i("Filter", _recsToShow.value.size.toString())
     }
     private fun check(tag: Boolean, recTag: Boolean) : Boolean {
         return if (tag) {
@@ -57,7 +52,5 @@ class RecommendsViewModel @Inject constructor(
         } else {
             false
         }
-
     }
-
 }

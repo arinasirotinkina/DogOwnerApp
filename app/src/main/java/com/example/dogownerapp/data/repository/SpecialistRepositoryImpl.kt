@@ -1,7 +1,6 @@
 package com.example.dogownerapp.data.repository
 
 import com.example.dogownerapp.domain.model.Specialist
-import com.example.dogownerapp.domain.model.User
 import com.example.dogownerapp.domain.repository.SpecialistRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,7 +17,6 @@ class SpecialistRepositoryImpl @Inject constructor(
     override fun getSpecialist(): Flow<Specialist> = callbackFlow {
         val specId: String = auth.currentUser?.uid ?: throw IllegalStateException("User not authenticated")
         val specDocument = firestore.collection("specialists").document(specId)
-
         val listener = specDocument.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 close(e)

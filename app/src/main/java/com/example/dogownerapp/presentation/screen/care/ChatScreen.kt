@@ -10,12 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.dogownerapp.domain.model.Message
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 
 @Composable
-fun ChatScreen(viewModel: ChatViewModel, navController: NavController, chatId: String, name: String, owner:Boolean) {
+fun ChatScreen(viewModel: ChatViewModel, chatId: String, name: String, owner:Boolean) {
     viewModel.loadMessages(chatId, owner)
     val messages by viewModel.messages.collectAsState()
     var inputText by remember { mutableStateOf(TextFieldValue("")) }

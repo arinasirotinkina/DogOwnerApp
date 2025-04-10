@@ -17,10 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dogownerapp.domain.model.Chat
 import com.example.dogownerapp.presentation.screen.auth.Space
+import com.example.dogownerapp.presentation.screen.auth.customColors
 import com.example.dogownerapp.presentation.viewmodel.ChatViewModel
 
 @Composable
@@ -30,18 +33,19 @@ fun ChatListScreen(chatViewModel: ChatViewModel, navController: NavController, o
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
-        Text(text = "Список чатов", style = MaterialTheme.typography.headlineMedium)
+        Text("Список чатов", fontSize = 24.sp, fontWeight = FontWeight.Bold,
+            color = customColors.primary)
         Space()
         LazyColumn {
             items(chats) { chat ->
-                ChatItem(chat, navController, owner)
+                ChatItem(chat, navController)
             }
         }
     }
 }
 
 @Composable
-fun ChatItem(chat: Chat, navController: NavController, owner: Boolean) {
+fun ChatItem(chat: Chat, navController: NavController) {
     val chatId = chat.id
     val name = chat.name
     Card(

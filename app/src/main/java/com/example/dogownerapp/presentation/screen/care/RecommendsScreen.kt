@@ -194,6 +194,5 @@ fun RecItem(rec: Recommendation, navController: NavController) {
             color = Color.Gray,
             fontSize = 16.sp
         )
-
     }
 }

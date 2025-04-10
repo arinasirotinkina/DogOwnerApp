@@ -1,8 +1,6 @@
 package com.example.dogownerapp.data.repository
 
-import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.User
-import com.example.dogownerapp.domain.repository.DogRepository
 import com.example.dogownerapp.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,13 +12,12 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth // Получаем FirebaseAuth для получения userId
+    private val auth: FirebaseAuth
 ) : UserRepository {
     private val userId: String = auth.currentUser?.uid ?: throw IllegalStateException("User not authenticated")
 
     override fun getUser(): Flow<User> = callbackFlow{
         val userDocument = firestore.collection("users").document(userId)
-
         val listener = userDocument.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 close(e)
@@ -31,7 +28,6 @@ class UserRepositoryImpl @Inject constructor(
                 trySend(user).isSuccess
             }
         }
-
         awaitClose { listener.remove() }
     }
 
@@ -52,6 +48,4 @@ class UserRepositoryImpl @Inject constructor(
             "favourites", favourites
         ).await()
     }
-
-
 }

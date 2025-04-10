@@ -1,6 +1,5 @@
 package com.example.dogownerapp.domain.repository
 
-import com.example.dogownerapp.domain.model.Dog
 import com.example.dogownerapp.domain.model.Recommendation
 import kotlinx.coroutines.flow.Flow
 

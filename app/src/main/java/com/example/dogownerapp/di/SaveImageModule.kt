@@ -1,6 +1,7 @@
 package com.example.dogownerapp.di
 
-import com.google.firebase.auth.FirebaseAuth
+import com.example.dogownerapp.data.datasource.SaveImageServiceImpl
+import com.example.dogownerapp.domain.repository.SaveImageService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,9 +10,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object FirebaseModule {
+object SaveImageModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+    fun provideSaveImage(): SaveImageService =
+        SaveImageServiceImpl("arinas8t_h", "H123h456!")
 }

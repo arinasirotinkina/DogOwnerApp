@@ -1,6 +1,5 @@
 package com.example.dogownerapp.data.repository
 
-import android.util.Log
 import com.example.dogownerapp.data.datasource.FirebaseAuthDataSource
 import com.example.dogownerapp.domain.model.AuthResult
 import com.example.dogownerapp.domain.model.User
@@ -43,10 +42,8 @@ class AuthRepositoryImpl @Inject constructor (private val dataSource: FirebaseAu
     }
 
     override fun getUser(): Flow<User> = callbackFlow{
-         val userId: String = auth.currentUser?.uid ?: throw IllegalStateException("User not authenticated")
-
+        val userId: String = auth.currentUser?.uid ?: throw IllegalStateException("User not authenticated")
         val userDocument = firestore.collection("users").document(userId)
-
         val listener = userDocument.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 close(e)
@@ -57,7 +54,6 @@ class AuthRepositoryImpl @Inject constructor (private val dataSource: FirebaseAu
                 trySend(user).isSuccess
             }
         }
-
         awaitClose { listener.remove() }
     }
 

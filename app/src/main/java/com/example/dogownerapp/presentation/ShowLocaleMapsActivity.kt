@@ -34,14 +34,14 @@ import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.runtime.image.ImageProvider
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
+
 class ShowLocaleMapsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShowLocaleMapsBinding
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var mapObjects: MapObjectCollection  // Инициализируем переменную
-    private var geoPoint: GeoPoint? = null  // Объект GeoPoint для переданных координат
+    private lateinit var mapObjects: MapObjectCollection
 
     private val requestPermissionLocationLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -65,19 +65,12 @@ class ShowLocaleMapsActivity : AppCompatActivity() {
 
         binding = ActivityShowLocaleMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Инициализируем переменную mapObjects здесь
         mapObjects = binding.mapview.map.mapObjects
-
-        // Получаем переданные координаты из Intent
         latitude = intent.getDoubleExtra("latitude", 0.0)
         longitude = intent.getDoubleExtra("longitude", 0.0)
-
-        // Если координаты не 0.0, отображаем точку на карте
         if (latitude != 0.0 && longitude != 0.0) {
             setMarkerLocation(Point(latitude, longitude))
         } else {
-            // Если координаты не переданы, показываем текущую локацию пользователя
             showAtPoint()
         }
 
@@ -94,10 +87,7 @@ class ShowLocaleMapsActivity : AppCompatActivity() {
         placemarkMapObject.opacity = 0.7f
         binding.mapview.map.move(
             CameraPosition(
-                location,
-                15.0f, // Зум на уровне 15 (можно изменять в зависимости от нужд)
-                0.0f,
-                0.0f
+                location, 12.0f, 0.0f, 0.0f
             )
         )
     }
@@ -144,12 +134,12 @@ class ShowLocaleMapsActivity : AppCompatActivity() {
                 val locationRequest =
                     com.google.android.gms.location.LocationRequest.create().apply {
                         priority = com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
-                        interval = 5000
+                        interval = 1000
                     }
 
                 val locationCallback = object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult) {
-                        if (!isLocationUpdated) { // Проверяем, обновляли ли мы местоположение ранее
+                        if (!isLocationUpdated) {
                             locationResult.lastLocation?.let { location ->
                                 val userLatLng = LatLng(location.latitude, location.longitude)
                                 binding.mapview.map.move(
@@ -161,8 +151,8 @@ class ShowLocaleMapsActivity : AppCompatActivity() {
                                     )
                                 )
 
-                                isLocationUpdated = true // Ставим флаг, чтобы больше не обновлять
-                                fusedLocationClient.removeLocationUpdates(this) // Останавливаем обновления
+                                isLocationUpdated = true
+                                fusedLocationClient.removeLocationUpdates(this)
                             }
                         }
                     }

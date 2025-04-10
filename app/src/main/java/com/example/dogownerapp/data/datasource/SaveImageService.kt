@@ -1,6 +1,9 @@
+package com.example.dogownerapp.data.datasource
+
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.example.dogownerapp.domain.repository.SaveImageService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTP
@@ -8,16 +11,17 @@ import org.apache.commons.net.ftp.FTPClient
 import java.io.IOException
 import java.io.InputStream
 
-class SaveImageService {
-    suspend fun uploadFileToFTP(uri: Uri, context: Context, collection: String, id: String) = withContext(Dispatchers.IO) {
+class SaveImageServiceImpl (private val user: String, private val password: String)
+    : SaveImageService {
+    override suspend fun uploadFileToFTP(uri: Uri, context: Context, collection: String, id: String)
+    = withContext(Dispatchers.IO) {
         val ftpClient = FTPClient()
-
         try {
             ftpClient.connect("arinas8t.beget.tech", 21)
             ftpClient.setConnectTimeout(5000)
             ftpClient.setDataTimeout(5000)
             ftpClient.enterLocalPassiveMode()
-            val loginSuccess = ftpClient.login("arinas8t_h", "H123h456!")
+            val loginSuccess = ftpClient.login(user, password)
             if (!loginSuccess) {
                 Log.e("FTP", "Ошибка аутентификации")
                 return@withContext
@@ -43,21 +47,17 @@ class SaveImageService {
             Log.e("FTP", "Ошибка: ${e.message}")
         }
     }
-    suspend fun renameFileOnFTP(
+    override suspend fun renameFileOnFTP(
         collection: String,
         oldFileName: String,
         newFileName: String) = withContext(Dispatchers.IO) {
         val ftpClient = FTPClient()
          try {
-            ftpClient.connect("arinas8t.beget.tech", 21)
+             ftpClient.connect("arinas8t.beget.tech", 21)
              ftpClient.connectTimeout = 2000
-            ftpClient.setDataTimeout(2000)
-
-            Log.d("FTP", "Подключение успешно!")
-
-            ftpClient.login("arinas8t_h", "H123h456!")
-
-            ftpClient.enterLocalPassiveMode()
+             ftpClient.setDataTimeout(2000)
+             ftpClient.login(user, password)
+             ftpClient.enterLocalPassiveMode()
              val changeDirSuccess = ftpClient.changeWorkingDirectory("arinas8t.beget.tech/public_html/photo/$collection")
              if (changeDirSuccess) {
                  Log.d("FTP", "Директория изменена на: $collection")
@@ -65,14 +65,12 @@ class SaveImageService {
                  Log.d("FTP", "Не удалось сменить директорию.")
                  return@withContext false
              }
-
              val files = ftpClient.listFiles()
              Log.d("FTP", "Список файлов в директории:")
              files.forEach {
                  Log.d("FTP", "Файл: ${it.name}")
              }
              val success = ftpClient.rename(oldFileName, newFileName)
-
              if (success) {
                  Log.d("FTP", "Файл успешно переименован.")
              } else {
